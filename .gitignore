@@ -1,0 +1,5 @@
+# Log Files
+*.log
+
+#Settings Files
+*.js
