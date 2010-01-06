@@ -1,6 +1,10 @@
 from optparse import OptionParser
 from purplebot.bot import bot
 
+def join(bot,channels):
+	for channel in channels:
+		bot.irc_join(channel)
+
 if __name__ == '__main__':
 	parser = OptionParser()
 	parser.add_option("--debug", dest="debug", help="Debug", default=0,type="int")
@@ -16,7 +20,5 @@ if __name__ == '__main__':
 	newbot = bot(opts.debug)
 	for plugin in opts.plugins:
 		newbot.plugin_register(plugin)
-	newbot.connect(opts.host, opts.port, opts.nick, opts.ident, opts.realname)
-	for channel in opts.channels:
-		newbot.irc_join(channel)
-	newbot.run()
+	newbot.timedelay(10,join,[newbot,opts.channels]) #Delayed join
+	newbot.run(opts.host, opts.port, opts.nick, opts.ident, opts.realname)
