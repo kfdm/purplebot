@@ -1,4 +1,8 @@
 from purplebot.bot import bot
+import os
+
+#Write the PID to disk in case we want to use signals
+file('samplebot.pid','w').write(str(os.getpid()))
 
 HOST="Krypt.CA.US.GameSurge.net"
 PORT=6667

@@ -8,6 +8,7 @@ import simplejson
 import time
 import imp
 import threading
+import signal
 
 class BotError(Exception):
 	def __init__(self,message):
@@ -62,6 +63,17 @@ class bot(irc):
 		if not self.__settings.__contains__('Core::Blocks'):
 			self.__settings['Core::Blocks'] = []
 		self.block_rebuild()
+		
+		signal.signal(signal.SIGUSR1,self.__reload_plugins)
+		
+	def __reload_plugins(self,signum,sigframe):
+		print 'Bot recieved signal',signum
+		print 'Reloading Plugins'
+		for plugin in self.__plugins:
+			plugin = plugin.replace('_','.')
+			print 'Reloading',plugin
+			self.plugin_unregister(plugin)
+			self.plugin_register(plugin)
 	
 	def __parse_commands(self,bot,line):
 		'[":hostname(sender)","PRIVMSG","reciever(#channel or nick)",":*",*]'
@@ -167,7 +179,6 @@ class bot(irc):
 		try:
 			file	= module.replace('.','/')
 			module	= module.replace('.','_')
-			print file,module
 			mod = imp.load_source(module,'plugins/%s.py' % file)
 		except Exception,e:
 			self.debug( 'Error loading plugin %s\n%s' % (module,e) )

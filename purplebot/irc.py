@@ -32,6 +32,8 @@ class irc(object):
 		signal.signal(signal.SIGTERM,self._sig_term)
 	
 	def _sig_term(self,signum,sigframe):
+		print 'Bot recieved signal',signum
+		print 'Exiting'
 		self.running = False
 		if self._socket: self._socket.close()
 		
