@@ -1,5 +1,4 @@
 from irc import irc
-import sys
 import string
 import pickle
 import re
@@ -9,6 +8,7 @@ import time
 import imp
 import threading
 import signal
+import logging
 
 class BotError(Exception):
 	def __init__(self,message):
@@ -42,8 +42,24 @@ class BotThread(threading.Thread):
 			raise
 
 class bot(irc):
+	_format_file = '%(asctime)s %(levelname)-8s %(name)-12s %(message)s'
+	_format_console = '%(levelname)-8s %(name)-12s: %(message)s'
 	def __init__ (self,debug=0):
 		irc.__init__(self, debug)
+		
+		# Logging
+		logging.basicConfig(level=logging.DEBUG,
+			format=self._format_file,
+			datefmt='%m-%d %H:%M',
+			filename='bot.log',
+			filemode='w')
+		console = logging.StreamHandler()
+		console.setLevel(logging.INFO)
+		formatter = logging.Formatter(self._format_console)
+		console.setFormatter(formatter)
+		logging.getLogger('').addHandler(console)
+		self.__logger = logging.getLogger('bot')
+		
 		self.__plugins = {}
 		self.__settings = {}
 		self.__commands = {}
@@ -67,11 +83,11 @@ class bot(irc):
 		signal.signal(signal.SIGUSR1,self.__reload_plugins)
 		
 	def __reload_plugins(self,signum,sigframe):
-		print 'Bot recieved signal',signum
-		print 'Reloading Plugins'
+		self.__logger.info('Bot recieved signal %s'%signum)
+		self.__logger.info('Reloading Plugins')
 		for plugin in self.__plugins:
 			plugin = plugin.replace('_','.')
-			print 'Reloading',plugin
+			self.__logger.info('Reloading %s'%plugin)
 			self.plugin_unregister(plugin)
 			self.plugin_register(plugin)
 	
@@ -88,13 +104,13 @@ class bot(irc):
 			if line[3] in self.__commands.keys():
 				cmd = self.__commands[line[3]]
 				if hasattr(cmd,'alias'):
-					print 'Alias command',line[3],'=>',cmd.alias
+					self.__logger.info('Alias command %s => %s'%(line[3],cmd.alias))
 					if not cmd.alias in self.__commands.keys():
 						raise CommandError('Invalid Alias')
 					cmd = self.__commands[cmd.alias]
 					
 				if hasattr(cmd,'disabled') and cmd.disabled == True:
-					self.debug( cmd.command + ' has been disabled')
+					self.__logger.debug( cmd.command + ' has been disabled')
 					return
 				if hasattr(cmd,'owner'):
 					if host != self.__settings.get('Core::Owner',None):
@@ -103,19 +119,19 @@ class bot(irc):
 					if not self.admin_check({'nick':nick,'host':host}):
 						raise CommandError('Command requires Admin')
 				if hasattr(cmd, 'thread') and cmd.thread == True:
-					self.debug('Running '+cmd.__name__+' in a thread')
+					self.__logger.debug('Running '+cmd.__name__+' in a thread')
 					BotThread(self,nick,target=cmd, args=(self,{'nick':nick,'host':host},line)).start()
 				else:
 					cmd(self,{'nick':nick,'host':host},line)
 		except CommandError,e:
 			self.irc_notice(nick,e.__str__())
 		except Exception,e:
-			self.debug('Error processing commands\n%s\n%s'%(line,e))
+			self.__logger.debug('Error processing commands\n%s\n%s'%(line,e))
 			self.irc_notice(nick,'There was an error processing that command')
 			if self._debugvar >= 2: raise	
 	def parse_hostmask(self,hostmask):
 		tmp = hostmask.lstrip(':').split('!')
-		self.debug("--hostmask--("+hostmask+")("+tmp[0]+")("+tmp[1]+")")
+		self.__logger.debug("--hostmask--("+hostmask+")("+tmp[0]+")("+tmp[1]+")")
 		return tmp[0],tmp[1]
 	
 	def block_add(self,str):
@@ -131,15 +147,15 @@ class bot(irc):
 			self.settings_save()
 	def block_check(self,str):
 		for block in self.__blocks:
-			#self.debug('Checking: %s'%block)
+			#self.__logger.debug('Checking: %s'%block)
 			if block.search(str):
-				#self.debug('Blocking: %s'%block)
+				#self.__logger.debug('Blocking: %s'%block)
 				return True
 		return False
 	def block_rebuild(self):
 		self.__blocks = []
 		for block in self.__settings['Core::Blocks']:
-			self.debug('Compiling %s'%block)
+			self.__logger.debug('Compiling %s'%block)
 			block = block.replace('*','.*')
 			self.__blocks.append( re.compile(block) )
 	
@@ -181,20 +197,20 @@ class bot(irc):
 			module	= module.replace('.','_')
 			mod = imp.load_source(module,'plugins/%s.py' % file)
 		except Exception,e:
-			self.debug( 'Error loading plugin %s\n%s' % (module,e) )
+			self.__logger.debug( 'Error loading plugin %s\n%s' % (module,e) )
 			if self._debugvar >= 2: raise
 			return False
 		else:
 			self.__plugins[module] = mod
 			for name,obj in vars(mod).iteritems():
 				if name == 'load':
-					self.debug('Running %s plugin load event'%module)
+					self.__logger.debug('Running %s plugin load event'%module)
 					obj(self)
 				if hasattr(obj,'command'):
-					self.debug('Loading command: '+obj.command)
+					self.__logger.debug('Loading command: '+obj.command)
 					self.__commands[obj.command] = obj
 				if hasattr(obj,'event'):
-					self.debug('Loading %s event: %s'%(obj.event,name))
+					self.__logger.debug('Loading %s event: %s'%(obj.event,name))
 					if(obj.event=='privmsg'):
 						self._events_privmsg.append(obj)
 					elif(obj.event=='notice'):
@@ -213,19 +229,19 @@ class bot(irc):
 		try:
 			mod = self.__plugins[module]
 		except Exception,e:
-			self.debug( 'Error unloading plugin %s\n%s' % (module,e) )
+			self.__logger.debug( 'Error unloading plugin %s\n%s' % (module,e) )
 			if self._debugvar >= 2: raise
 			return False
 		else:
 			for name,obj in vars(mod).iteritems():
 				if name == 'unload':
-					self.debug('Running %s plugin unload event'%module)
+					self.__logger.debug('Running %s plugin unload event'%module)
 					obj(self)
 				if hasattr(obj,'command'):
-					self.debug('Unloading command: '+obj.command)
+					self.__logger.debug('Unloading command: '+obj.command)
 					self.__commands.pop(obj.command)
 				if hasattr(obj,'event'):
-					self.debug('Unloading %s event: %s'%(obj.event,name))
+					self.__logger.debug('Unloading %s event: %s'%(obj.event,name))
 					if(obj.event=='privmsg'):
 						self._events_privmsg.remove(obj)
 					elif(obj.event=='notice'):
@@ -251,7 +267,7 @@ class bot(irc):
 			output.write(simplejson.dumps(self.__settings, sort_keys=True, indent=4))
 			output.close()
 		except:
-			sys.stderr.write('Error writting settings!\n')
+			self.__logger.warning('Error writting settings!')
 			if self._debugvar >= 2: raise
 	def settings_load(self):
 		try:
@@ -259,7 +275,7 @@ class bot(irc):
 			self.__settings = simplejson.loads(input.read())
 			input.close()
 		except:
-			sys.stderr.write('Error loading settings!\n')
+			self.__logger.warning('Error loading settings')
 			if self._debugvar >= 2: raise
 	
 	def __cmd_version(self,bot,hostmask,line):
@@ -285,13 +301,13 @@ class bot(irc):
 	
 	def command_enable(self,cmd):
 		if cmd in self.__commands.keys():
-			self.debug('Enable command' + cmd)
+			self.__logger.debug('Enable command' + cmd)
 			cmd = self.__commands[cmd]
 			cmd.disabled = False
 	
 	def command_disable(self,cmd):
 		if cmd in self.__commands.keys():
-			self.debug('Disable command' + cmd)
+			self.__logger.debug('Disable command' + cmd)
 			cmd = self.__commands[cmd]
 			cmd.disabled = True
 	

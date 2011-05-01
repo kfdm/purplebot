@@ -1,8 +1,8 @@
 import string
 import time
-import sys
 import ircsocket
 import signal
+import logging
 
 class irc(object):
 	def __init__ (self,debug=1,log=True):
@@ -13,6 +13,7 @@ class irc(object):
 		self._exit 			= False
 		self._debugvar 		= debug
 		self._logvar 		= log
+		self.__logger		= logging.getLogger('irc')
 		self._channels 		= []
 		self._readbuffer	= ""
 		self._last_msg		= time.time()
@@ -32,8 +33,8 @@ class irc(object):
 		signal.signal(signal.SIGTERM,self._sig_term)
 	
 	def _sig_term(self,signum,sigframe):
-		print 'Bot recieved signal',signum
-		print 'Exiting'
+		self.__logger.info('Bot recieved signal %s'%signum)
+		self.__logger.info('Exiting')
 		self.running = False
 		if self._socket: self._socket.close()
 		
@@ -58,15 +59,9 @@ class irc(object):
 		self._socket.close()
 	
 	def log(self,msg):
-		print msg.strip()
-		if(self._logvar):
-			self._logger.write(time.ctime()+' '+msg.strip()+'\n')
-			self._logger.flush()
+		raise Exception('test')
 	def debug(self,msg):
-		if(self._debugvar >= 1):
-			COLOR_RESET		= '\033[1;0m'
-			COLOR_RED		= '\033[1;31m'
-			print >> sys.stderr, COLOR_RED+('%s'%msg).strip()+COLOR_RESET
+		raise Exception('test')
 	
 	###########################################################################
 	# Parsing Functions
@@ -75,47 +70,47 @@ class irc(object):
 		message=string.rstrip(line).split(' ',4)
 		try:
 			if(message[1]=="PRIVMSG"):
-				self.log('>> %s'%line)
+				self.__logger.debug('>> %s'%line)
 				self.__event_privmsg(message)
 			elif(message[1]=="NOTICE"):
-				self.log('>> %s'%line)
+				self.__logger.debug('>> %s'%line)
 				self.__event_notice(message)
 			elif(message[1]=="JOIN"):
-				self.log('>> %s'%line)
+				self.__logger.debug('>> %s'%line)
 				self.__event_join(message)
 			elif(message[1]=="PART"):
-				self.log('>> %s'%line)
+				self.__logger.debug('>> %s'%line)
 				self.__event_part(message)
 			elif(message[1]=="PONG"):
-				self.debug(message)
+				self.__logger.debug(message)
 				self.irc_ping(message[2])
 			elif(message[1]=="MODE"):
-				self.log('>> %s'%line)
+				self.__logger.debug('>> %s'%line)
 				self.__event_mode(message)
 			elif(message[1]=="NICK"):
-				self.log('>> %s'%line)
+				self.__logger.debug('>> %s'%line)
 				self.__event_nick(message)
 			else:
 				if(message[0]=="PING"):
-					self.log('>> %s'%line)
+					self.__logger.debug('>> %s'%line)
 					self.irc_pong(message[1])
 					if not self.connected:
 						self.connected = True
 						for event in self._events_connect:
-							self.debug('Connect Event:'+event.__name__)
+							self.__logger.debug('Connect Event:'+event.__name__)
 							event(self)
 				elif(message[0]=="ERROR"):
-					self.log('>> %s'%line)
+					self.__logger.debug('>> %s'%line)
 					message = ' '.join(message)
-					self.debug("---Error--- "+message)
+					self.__logger.error("---Error--- "+message)
 					self._socket.close()
 					self.running = False
 				else:
-					self.log('>> %s'%line)
+					self.__logger.debug('>> %s'%line)
 					message = ' '.join(message)
-					self.debug("--Unknown message-- "+message)
+					self.__logger.error("--Unknown message-- "+message)
 		except Exception,e:
-			self.debug('Error parsing line\n%s\n%s'%(line,e))
+			self.__logger.warning('Error parsing line: %s'%line)
 			if self._debugvar >= 2:
 				self.running = False
 				raise
@@ -142,7 +137,7 @@ class irc(object):
 		for event in self._events_nick:
 			event(self,line)
 	def __event_timer(self,time):
-		print time
+		self.__logger.info('Timer %s'%time)
 		for event in self._events_timer:
 			event(self,time)
 			
@@ -156,7 +151,7 @@ class irc(object):
 	def irc_raw(self,message):
 		#self.send(message)
 		self._socket.write(message.encode('utf-8'))
-		self.log('<< %s'%message.encode('utf-8'))
+		self.__logger.debug(('<< %s'%message.encode('utf-8')).strip())
 	def irc_nick(self,nick):
 		self.irc_raw("NICK %s\r\n" % nick)
 	def irc_part(self,channel):
