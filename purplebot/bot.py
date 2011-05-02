@@ -3,12 +3,14 @@ import string
 import pickle
 import re
 import types
-import simplejson
 import time
 import imp
 import threading
 import signal
 import logging
+
+try: import json
+except ImportError: import simplejson as json
 
 class BotError(Exception):
 	def __init__(self,message):
@@ -264,7 +266,7 @@ class bot(irc):
 	def settings_save(self):
 		try:
 			output = open('settings.js','wb')
-			output.write(simplejson.dumps(self.__settings, sort_keys=True, indent=4))
+			output.write(json.dumps(self.__settings, sort_keys=True, indent=4))
 			output.close()
 		except:
 			self.__logger.warning('Error writting settings!')
@@ -272,7 +274,7 @@ class bot(irc):
 	def settings_load(self):
 		try:
 			input = open('settings.js','rb')
-			self.__settings = simplejson.loads(input.read())
+			self.__settings = json.loads(input.read())
 			input.close()
 		except:
 			self.__logger.warning('Error loading settings')
