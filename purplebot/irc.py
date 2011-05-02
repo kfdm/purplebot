@@ -13,7 +13,9 @@ class irc(object):
 		self._exit 			= False
 		self._debugvar 		= debug
 		self._logvar 		= log
-		self.__logger		= logging.getLogger('irc')
+		self.__logger		= logging.getLogger(__name__)
+		self.__log_in		= logging.getLogger('irc.in')
+		self.__log_out		= logging.getLogger('irc.out')
 		self._channels 		= []
 		self._readbuffer	= ""
 		self._last_msg		= time.time()
@@ -67,32 +69,25 @@ class irc(object):
 	# Parsing Functions
 	###########################################################################
 	def parse_line(self,line):
+		self.__log_in.debug(line)
 		message=string.rstrip(line).split(' ',4)
 		try:
 			if(message[1]=="PRIVMSG"):
-				self.__logger.debug('>> %s'%line)
 				self.__event_privmsg(message)
 			elif(message[1]=="NOTICE"):
-				self.__logger.debug('>> %s'%line)
 				self.__event_notice(message)
 			elif(message[1]=="JOIN"):
-				self.__logger.debug('>> %s'%line)
 				self.__event_join(message)
 			elif(message[1]=="PART"):
-				self.__logger.debug('>> %s'%line)
 				self.__event_part(message)
 			elif(message[1]=="PONG"):
-				self.__logger.debug(message)
 				self.irc_ping(message[2])
 			elif(message[1]=="MODE"):
-				self.__logger.debug('>> %s'%line)
 				self.__event_mode(message)
 			elif(message[1]=="NICK"):
-				self.__logger.debug('>> %s'%line)
 				self.__event_nick(message)
 			else:
 				if(message[0]=="PING"):
-					self.__logger.debug('>> %s'%line)
 					self.irc_pong(message[1])
 					if not self.connected:
 						self.connected = True
@@ -100,13 +95,11 @@ class irc(object):
 							self.__logger.debug('Connect Event:'+event.__name__)
 							event(self)
 				elif(message[0]=="ERROR"):
-					self.__logger.debug('>> %s'%line)
 					message = ' '.join(message)
 					self.__logger.error("---Error--- "+message)
 					self._socket.close()
 					self.running = False
 				else:
-					self.__logger.debug('>> %s'%line)
 					message = ' '.join(message)
 					self.__logger.error("--Unknown message-- "+message)
 		except Exception,e:
@@ -149,9 +142,8 @@ class irc(object):
 	# IRC Functions
 	###########################################################################
 	def irc_raw(self,message):
-		#self.send(message)
 		self._socket.write(message.encode('utf-8'))
-		self.__logger.debug(('<< %s'%message.encode('utf-8')).strip())
+		self.__log_out.debug(message.encode('utf-8').strip())
 	def irc_nick(self,nick):
 		self.irc_raw("NICK %s\r\n" % nick)
 	def irc_part(self,channel):

@@ -58,7 +58,7 @@ class bot(irc):
 		formatter = logging.Formatter(self._format_console)
 		console.setFormatter(formatter)
 		logging.getLogger('').addHandler(console)
-		self.__logger = logging.getLogger('bot')
+		self.__logger = logging.getLogger(__name__)
 		
 		self.__plugins = {}
 		self.__settings = {}
