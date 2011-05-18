@@ -1,10 +1,22 @@
-from purplebot.bot import bot
 import os
+import logging
+from purplebot.bot import bot
 
-#Write the PID to disk in case we want to use signals
-file('samplebot.pid','w').write(str(os.getpid()))
+# Logging
+_format_file = '%(asctime)s %(levelname)-8s %(name)-12s %(message)s'
+_format_console = '%(levelname)-8s %(name)-12s: %(message)s'
+logging.basicConfig(level=logging.DEBUG,
+	format=_format_file,
+	datefmt='%m-%d %H:%M',
+	filename='bot.log',
+	filemode='w')
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
+formatter = logging.Formatter(_format_console)
+console.setFormatter(formatter)
+logging.getLogger('').addHandler(console)
 
-HOST="Krypt.CA.US.GameSurge.net"
+HOST="irc.gamesurge.net"
 PORT=6667
 NICK="PurpleBot"
 IDENT="PurpleBot"
