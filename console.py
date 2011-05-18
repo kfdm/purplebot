@@ -1,24 +1,48 @@
-from optparse import OptionParser
-from purplebot.bot import bot
+#!/usr/bin/env python
+import logging
+import optparse
+import os
 
-def join(bot,channels):
-	for channel in channels:
-		bot.irc_join(channel)
+from purplebot.daemon import PurpleDaemon
+
+LOG_FORMAT  = '%(asctime)s %(levelname)-8s %(name)-12s %(message)s'
+DEFAULT_PID = os.path.realpath('./purplebot.pid')
+DEFAULT_LOG = os.path.realpath('./purplebot.log')
+
+class PurpleParser(optparse.OptionParser):
+	def __init__(self):
+		def store_path(option,opt,value,parser):
+			setattr(parser.values, option.dest, os.path.realpath(value))
+		optparse.OptionParser.__init__(self,usage="%prog [options] (start|stop|restart)")
+		self.add_option('--host',help='IRC Server',
+			dest='host',default='irc.gamesurge.net')
+		self.add_option('--port',help='IRC Port',
+			dest='port',type='int',default=6667)
+		self.add_option('--nick',help='Nickname',
+			dest='nick',default='PurpleBot')
+		self.add_option('--ident',help='Ident',
+			dest='ident',default='PurpleBot')
+		self.add_option('--realname',help='Realname',
+			dest='realname',default='PurpleBot')
+		self.add_option('--quit',help='Quit Message',
+			dest='quit',default='Sayonara')
+		self.add_option('--channel',help='Channels to join',
+			dest='channels',action='append',default=[])
+		self.add_option('--plugins',help='Plugins to load',
+			dest='plugins',action='append',default=[])
+		self.add_option('-p','--pid',dest='pid',default=DEFAULT_PID,
+			action='callback',callback=store_path,type=str)
+		self.add_option('-l','--log',dest='log',default=DEFAULT_LOG,
+			action='callback',callback=store_path,type=str)
+		self.add_option('-v','--verbose',dest='verbose',default=logging.INFO,
+			action='store_const',const=logging.DEBUG)
 
 if __name__ == '__main__':
-	parser = OptionParser()
-	parser.add_option("--debug", dest="debug", help="Debug", default=0,type="int")
-	parser.add_option("--host", dest="host", help="IRC Server", default="irc.gamesurge.net")
-	parser.add_option("--port", dest="port", help="IRC Port", default=6667,type="int")
-	parser.add_option("--nick", dest="nick", help="Nickname", default="PurpleBot")
-	parser.add_option("--ident", dest="ident", help="Ident", default="PurpleBot")
-	parser.add_option("--realname", dest="realname", help="Realname", default="PurpleBot")
-	parser.add_option("--quit", dest="quit", help="Quit Message", default="Sayonara")
-	parser.add_option("--channel", dest="channels", help="Channels to join", default=[],action="append")
-	parser.add_option("--plugin", dest="plugins", help="Plugins", default=[],action="append")
-	(opts,args) = parser.parse_args()
-	newbot = bot(opts.debug)
-	for plugin in opts.plugins:
-		newbot.plugin_register(plugin)
-	newbot.timedelay(10,join,[newbot,opts.channels]) #Delayed join
-	newbot.run(opts.host, opts.port, opts.nick, opts.ident, opts.realname)
+	(options,args) = PurpleParser().parse_args()
+	logging.basicConfig(
+		level=options.verbose,
+		filename=options.log,
+		format=LOG_FORMAT,
+		filemode='w'
+	)
+	PurpleDaemon(options.pid).parse_args(options,args)
