@@ -1,4 +1,4 @@
-from irc import irc
+import os
 import string
 import re
 import time
@@ -9,6 +9,9 @@ import logging
 
 try: import json
 except ImportError: import simplejson as json
+
+from irc import irc
+
 
 class BotError(Exception):
 	def __init__(self,message):
@@ -54,6 +57,8 @@ class bot(irc):
 		
 		#Register command handler on privmsg event queue
 		self._events_privmsg.append( self.__parse_commands )
+		
+		self.plugindir = os.path.realpath(os.path.join(os.path.dirname(__file__),'../plugins'))
 		
 		#Register some internal commands
 		self.plugin_register('core')
@@ -179,12 +184,14 @@ class bot(irc):
 	def plugin_register(self,module):
 		if module in self.__plugins.keys():
 			return True
+		
+		path	= module.replace('.','/')+'.py'
+		module	= module.replace('.','_')
+		path = os.path.join(self.plugindir,path)
 		try:
-			file	= module.replace('.','/')
-			module	= module.replace('.','_')
-			mod = imp.load_source(module,'plugins/%s.py' % file)
+			mod = imp.load_source(module,path)
 		except Exception,e:
-			self.__logger.debug( 'Error loading plugin %s',module )
+			self.__logger.debug( 'Error loading plugin %s',path)
 			if self._debugvar >= 2: raise
 			return False
 		else:
