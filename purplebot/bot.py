@@ -191,7 +191,7 @@ class bot(irc):
 		try:
 			mod = imp.load_source(module,path)
 		except Exception,e:
-			self.__logger.debug( 'Error loading plugin %s',path)
+			self.__logger.exception( 'Error loading plugin %s',path)
 			if self._debugvar >= 2: raise
 			return False
 		else:
