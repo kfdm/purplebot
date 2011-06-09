@@ -35,12 +35,15 @@ class BotThread(threading.Thread):
 			if self._Thread__target:
 				self._Thread__target(*self._Thread__args, **self._Thread__kwargs)
 		except CommandError,e:
+			logging.getLogger(__name__).exception('Command Error')
 			self.bot.irc_notice(self.nick,'CommandError: %s'%e)
 			raise
 		except PluginError,e:
+			logging.getLogger(__name__).exception('Plugin Error')
 			self.bot.irc_notice(self.nick,'PluginError: %s'%e)
 			raise
 		except Exception, e:
+			logging.getLogger(__name__).exception('Unknown Exception')
 			self.bot.irc_notice(self.nick,'Unknown Exception')
 			raise
 
