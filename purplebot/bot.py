@@ -282,13 +282,13 @@ class bot(irc):
 	
 	def command_enable(self,cmd):
 		if cmd in self.__commands.keys():
-			self.__logger.debug('Enable command %s',cmd)
+			self.__logger.info('Enable command %s',cmd)
 			cmd = self.__commands[cmd]
 			cmd.disabled = False
 	
 	def command_disable(self,cmd):
 		if cmd in self.__commands.keys():
-			self.__logger.debug('Disable command %s',cmd)
+			self.__logger.info('Disable command %s',cmd)
 			cmd = self.__commands[cmd]
 			cmd.disabled = True
 	
