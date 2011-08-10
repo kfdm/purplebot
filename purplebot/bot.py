@@ -59,7 +59,7 @@ class bot(irc):
 		self.__timer = {}
 		
 		#Register command handler on privmsg event queue
-		self._events_privmsg.append( self.__parse_commands )
+		self.event_register('PRIVMSG',self.__parse_commands)
 		
 		self.plugindir = os.path.realpath(os.path.join(os.path.dirname(__file__),'../plugins'))
 		
@@ -208,16 +208,7 @@ class bot(irc):
 					self.__commands[obj.command] = obj
 				if hasattr(obj,'event'):
 					self.__logger.debug('Loading %s event: %s',obj.event,name)
-					if(obj.event=='privmsg'):
-						self._events_privmsg.append(obj)
-					elif(obj.event=='notice'):
-						self._events_notice.append(obj)
-					elif(obj.event=='join'):
-						self._events_join.append(obj)
-					elif(obj.event=='connect'):
-						self._events_connect.append(obj)
-					elif(obj.event=='nick'):
-						self._events_nick.append(obj)
+					self.event_register(obj.event,obj)
 		
 	def plugin_unregister(self,module):
 		module	= module.replace('.','_')
@@ -239,14 +230,7 @@ class bot(irc):
 					self.__commands.pop(obj.command)
 				if hasattr(obj,'event'):
 					self.__logger.debug('Unloading %s event: %s',obj.event,name)
-					if(obj.event=='privmsg'):
-						self._events_privmsg.remove(obj)
-					elif(obj.event=='notice'):
-						self._events_notice.remove(obj)
-					elif(obj.event=='join'):
-						self._events_join.remove(obj)
-					#elif(obj.event=='connect'):
-					#	self._events_connect.remove(obj)
+					self.event_unregister(obj.event,obj)
 			self.__plugins.pop(module)
 	
 	def setting_get(self,key,default=None,required=False):
@@ -281,7 +265,7 @@ class bot(irc):
 	def kill(self):
 		for p in self.__plugins.keys():
 			self.plugin_unregister(p)
-		self._events_privmsg.remove(self.__parse_commands)
+		self.event_unregister('PRIVMSG',self.__parse_commands)
 		self.running = False
 	
 	def command_help(self,cmd):
