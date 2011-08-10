@@ -31,10 +31,10 @@ class irc(object):
 		
 		self._events_timer.append( self.__irc_timeout )
 		
-		signal.signal(signal.SIGINT, self._sig_term)
-		signal.signal(signal.SIGTERM,self._sig_term)
+		signal.signal(signal.SIGINT, self.__sig_term)
+		signal.signal(signal.SIGTERM,self.__sig_term)
 	
-	def _sig_term(self,signum,sigframe):
+	def __sig_term(self,signum,sigframe):
 		self.__logger.info('Bot recieved signal %s'%signum)
 		self.__logger.info('Exiting')
 		self.running = False
