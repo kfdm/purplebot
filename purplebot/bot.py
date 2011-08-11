@@ -1,3 +1,4 @@
+"""Basic IRC Bot"""
 import os
 import string
 import re
@@ -48,6 +49,7 @@ class BotThread(threading.Thread):
 			raise
 
 class bot(irc):
+	"""Mostly simple IRC Bot framework"""
 	def __init__ (self,debug=0):
 		irc.__init__(self, debug)
 		self.__logger = logging.getLogger(__name__)
@@ -125,17 +127,23 @@ class bot(irc):
 			self.irc_notice(nick,'There was an error processing that command')
 			if self._debugvar >= 2: raise
 	def parse_hostmask(self,hostmask):
+		"""Parse a hostmask into the nick and hostmask parts
+		
+		@param hostmask:
+		"""
 		tmp = hostmask.lstrip(':').split('!')
 		self.__logger.debug("--hostmask--(%s)(%s)(%s)",hostmask,tmp[0],tmp[1])
 		return tmp[0],tmp[1]
 	
 	def block_add(self,str):
+		"""Add name to the blocklist"""
 		if str in self.__settings['Core::Blocks']:
 			return
 		self.__settings['Core::Blocks'].append(str)
 		self.block_rebuild()
 		self.settings_save()
 	def block_remove(self,str):
+		"""Remove name from the block list"""
 		if str in self.__settings['Core::Blocks']:
 			self.__settings['Core::Blocks'].remove(str)
 			self.block_rebuild()
@@ -201,13 +209,13 @@ class bot(irc):
 			self.__plugins[module] = mod
 			for name,obj in vars(mod).iteritems():
 				if name == 'load':
-					self.__logger.debug('Running %s plugin load event',module)
+					self.__logger.info('Running %s plugin load event',module)
 					obj(self)
 				if hasattr(obj,'command'):
-					self.__logger.debug('Loading command: %s',obj.command)
+					self.__logger.info('Loading command: %s',obj.command)
 					self.__commands[obj.command] = obj
 				if hasattr(obj,'event'):
-					self.__logger.debug('Loading %s event: %s',obj.event,name)
+					self.__logger.info('Loading %s event: %s',obj.event,name)
 					self.event_register(obj.event,obj)
 		
 	def plugin_unregister(self,module):

@@ -5,6 +5,7 @@ import signal
 import logging
 
 class irc(object):
+	"""Core IRC methods"""
 	def __init__ (self,debug=1,log=True):
 		self.buffer = ''
 		
@@ -52,11 +53,6 @@ class irc(object):
 				self.parse_line(tmp)
 		self._socket.close()
 	
-	def log(self,msg):
-		raise Exception('test')
-	def debug(self,msg):
-		raise Exception('test')
-	
 	###########################################################################
 	# Parsing Functions
 	###########################################################################
@@ -91,22 +87,37 @@ class irc(object):
 	###########################################################################
 	# Event Functions
 	###########################################################################
-	def event(self,key,param=None):
-		if key in self.__events:
-			for event in self.__events[key]:
-				logging.getLogger('events').info('%s|%s',key,param)
+	def event(self,event_name,param=None):
+		'''Run events
+		
+		@param event_name: Examples PRIVMSG, CONNECT, JOIN
+		@param param:
+		'''
+		if event_name in self.__events:
+			for event in self.__events[event_name]:
+				logging.getLogger('events').info('%s|%s',event_name,param)
 				event(self,param)
-	def event_register(self,key,function):
-		key = key.upper()
-		if not key in self.__events:
-			self.__events[key] = []
-		self.__events[key].append(function)
-	def event_unregister(self,key,function):
-		key = key.upper()
-		if key in self.__events:
-			self.__events[key].remove(function)
-			if len(self.__events[key]) == 0:
-				self.__events.pop(key)
+	def event_register(self,event_name,function):
+		"""Register a new event
+		
+		@param event_name: Examples PRIVMSG, CONNECT, JOIN
+		@param function: function to be called. Order is not guarenteed
+		"""
+		event_name = event_name.upper()
+		if not event_name in self.__events:
+			self.__events[event_name] = []
+		self.__events[event_name].append(function)
+	def event_unregister(self,event_name,function):
+		"""Unregister an event
+		
+		@param event_name: Examples PRIVMSG, CONNECT, JOIN
+		@param function: function to be unregistered
+		"""
+		event_name = event_name.upper()
+		if event_name in self.__events:
+			self.__events[event_name].remove(function)
+			if len(self.__events[event_name]) == 0:
+				self.__events.pop(event_name)
 			
 	def __irc_timeout(self,bot,time):
 		if time - self._last_msg > self.__TIMEOUT:

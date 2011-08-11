@@ -4,3 +4,6 @@
 #Settings Files
 *.js
 *.pid
+
+# Generated docs
+docs/_build/*
