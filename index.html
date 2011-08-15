@@ -1,0 +1,198 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Core IRC Module &mdash; PurpleBot v2.5 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '2.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="PurpleBot v2.5 documentation" href="#" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="#">PurpleBot v2.5 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="core-irc-module">
+<h1>Core IRC Module<a class="headerlink" href="#core-irc-module" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="bot-events">
+<h2>Bot Events<a class="headerlink" href="#bot-events" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="purplebot.irc.irc.event">
+<tt class="descclassname">irc.</tt><tt class="descname">event</tt><big>(</big><em>event_name</em>, <em>param=None</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run events</p>
+<p>&#64;param event_name: Examples PRIVMSG, CONNECT, JOIN
+&#64;param param:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="purplebot.irc.irc.event_register">
+<tt class="descclassname">irc.</tt><tt class="descname">event_register</tt><big>(</big><em>event_name</em>, <em>function</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.event_register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a new event</p>
+<p>&#64;param event_name: Examples PRIVMSG, CONNECT, JOIN
+&#64;param function: function to be called. Order is not guarenteed</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="purplebot.irc.irc.event_unregister">
+<tt class="descclassname">irc.</tt><tt class="descname">event_unregister</tt><big>(</big><em>event_name</em>, <em>function</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.event_unregister" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unregister an event</p>
+<p>&#64;param event_name: Examples PRIVMSG, CONNECT, JOIN
+&#64;param function: function to be unregistered</p>
+</dd></dl>
+
+</div>
+<div class="section" id="irc-commands">
+<h2>IRC Commands<a class="headerlink" href="#irc-commands" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="purplebot.irc.irc.irc_raw">
+<tt class="descclassname">irc.</tt><tt class="descname">irc_raw</tt><big>(</big><em>message</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.irc_raw" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="purplebot.irc.irc.irc_join">
+<tt class="descclassname">irc.</tt><tt class="descname">irc_join</tt><big>(</big><em>channel</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.irc_join" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="purplebot.irc.irc.irc_privmsg">
+<tt class="descclassname">irc.</tt><tt class="descname">irc_privmsg</tt><big>(</big><em>dest</em>, <em>msg</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.irc_privmsg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="purplebot.irc.irc.irc_notice">
+<tt class="descclassname">irc.</tt><tt class="descname">irc_notice</tt><big>(</big><em>dest</em>, <em>message</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.irc_notice" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+<div class="section" id="core-bot-functions">
+<h1>Core Bot Functions<a class="headerlink" href="#core-bot-functions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="plugins">
+<h2>Plugins<a class="headerlink" href="#plugins" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="purplebot.bot.bot.plugin_register">
+<tt class="descclassname">bot.</tt><tt class="descname">plugin_register</tt><big>(</big><em>module</em><big>)</big><a class="headerlink" href="#purplebot.bot.bot.plugin_register" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="purplebot.bot.bot.plugin_unregister">
+<tt class="descclassname">bot.</tt><tt class="descname">plugin_unregister</tt><big>(</big><em>module</em><big>)</big><a class="headerlink" href="#purplebot.bot.bot.plugin_unregister" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="purplebot.bot.bot.plugin_list">
+<tt class="descclassname">bot.</tt><tt class="descname">plugin_list</tt><big>(</big><big>)</big><a class="headerlink" href="#purplebot.bot.bot.plugin_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="commands">
+<h2>Commands<a class="headerlink" href="#commands" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="purplebot.bot.bot.command_enable">
+<tt class="descclassname">bot.</tt><tt class="descname">command_enable</tt><big>(</big><em>cmd</em><big>)</big><a class="headerlink" href="#purplebot.bot.bot.command_enable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="purplebot.bot.bot.command_disable">
+<tt class="descclassname">bot.</tt><tt class="descname">command_disable</tt><big>(</big><em>cmd</em><big>)</big><a class="headerlink" href="#purplebot.bot.bot.command_disable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="purplebot.bot.bot.command_help">
+<tt class="descclassname">bot.</tt><tt class="descname">command_help</tt><big>(</big><em>cmd</em><big>)</big><a class="headerlink" href="#purplebot.bot.bot.command_help" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<div class="toctree-wrapper compound">
+<ul class="simple">
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Core IRC Module</a><ul>
+<li><a class="reference internal" href="#bot-events">Bot Events</a></li>
+<li><a class="reference internal" href="#irc-commands">IRC Commands</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#core-bot-functions">Core Bot Functions</a><ul>
+<li><a class="reference internal" href="#plugins">Plugins</a></li>
+<li><a class="reference internal" href="#commands">Commands</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="#">PurpleBot v2.5 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Paul Traylor.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>
