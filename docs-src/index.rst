@@ -1,4 +1,49 @@
-Core IRC Module
+
+Core Bot Functions
+==================
+
+When modifying the base bot or writing plugins, these are the methods you will
+typically be interested in
+
+Plugins
+-------
+
+Much of the functionality for the bot comes from registering plugins
+
+.. automethod:: purplebot.bot.bot.plugin_register
+.. automethod:: purplebot.bot.bot.plugin_unregister
+.. automethod:: purplebot.bot.bot.plugin_list
+
+Commands
+--------
+.. automethod:: purplebot.bot.bot.command_enable
+.. automethod:: purplebot.bot.bot.command_disable
+.. automethod:: purplebot.bot.bot.command_help
+
+Admin
+-----
+.. automethod:: purplebot.bot.bot.admin_add
+.. automethod:: purplebot.bot.bot.admin_remove
+.. automethod:: purplebot.bot.bot.admin_check
+
+Block
+-----
+.. automethod:: purplebot.bot.bot.block_add
+.. automethod:: purplebot.bot.bot.block_remove
+
+Alias
+-----
+.. automethod:: purplebot.bot.bot.alias_add
+.. automethod:: purplebot.bot.bot.alias_remove
+
+Setting
+-------
+.. automethod:: purplebot.bot.bot.setting_get
+.. automethod:: purplebot.bot.bot.setting_set
+.. automethod:: purplebot.bot.bot.settings_save
+.. automethod:: purplebot.bot.bot.settings_load
+
+Core IRC Functions
 =====================================
 
 Bot Events
@@ -31,20 +76,6 @@ Basic IRC commands. Use these to send messages to the server.
 .. automethod:: purplebot.irc.irc.irc_ctcp_reply
 .. automethod:: purplebot.irc.irc.irc_ctcp_send
 
-Core Bot Functions
-==================
-
-Plugins
--------
-.. automethod:: purplebot.bot.bot.plugin_register
-.. automethod:: purplebot.bot.bot.plugin_unregister
-.. automethod:: purplebot.bot.bot.plugin_list
-
-Commands
---------
-.. automethod:: purplebot.bot.bot.command_enable
-.. automethod:: purplebot.bot.bot.command_disable
-.. automethod:: purplebot.bot.bot.command_help
 
 .. toctree::
    :maxdepth: 2

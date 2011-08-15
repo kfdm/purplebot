@@ -6,4 +6,4 @@
 *.pid
 
 # Generated docs
-docs-src/doctrees/*
+docs-src/doctrees*

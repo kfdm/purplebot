@@ -193,6 +193,11 @@ class bot(irc):
 		self.__commands.pop(alias)
 		
 	def plugin_register(self,module):
+		"""Register a new plugin
+		
+		:param module: Module name in dot format. Ex my.plugin
+		:type module: str
+		"""
 		if module in self.__plugins.keys():
 			return True
 		
@@ -219,6 +224,11 @@ class bot(irc):
 					self.event_register(obj.event,obj)
 		
 	def plugin_unregister(self,module):
+		"""Unregister a plugin
+		
+		:param module: Module name in dot format. Ex my.plugin
+		:type module: str
+		"""
 		module	= module.replace('.','_')
 		if not module in self.__plugins.keys():
 			return False
@@ -286,6 +296,7 @@ class bot(irc):
 			return 'Invalid Command'
 	
 	def plugin_list(self):
+		"""Return a list of currently loaded plugins"""
 		return self.__plugins.keys()
 	
 	def command_enable(self,cmd):

@@ -6,14 +6,16 @@ import logging
 
 class irc(object):
 	"""Core IRC methods"""
-	def __init__ (self,debug=1,log=True):
+	def __init__ (self,debug=1):
+		"""Initialize the bot
+		:param debug: debug level
+		"""
 		self.buffer = ''
 		
 		self.running		= True
 		self.connected		= False
 		self._exit 			= False
 		self._debugvar 		= debug
-		self._logvar 		= log
 		self.__logger		= logging.getLogger(__name__)
 		self.__log_in		= logging.getLogger('irc.in')
 		self.__log_out		= logging.getLogger('irc.out')
@@ -98,11 +100,10 @@ class irc(object):
 	# Event Functions
 	###########################################################################
 	def event(self,event_name,param=None):
-		'''Run events
-		
-		event_name: Examples PRIVMSG, CONNECT, JOIN
-		
-		param: Parameters to send to the registered functions. Varies from
+		'''Run events on named queue
+		:param event_name: Examples PRIVMSG, CONNECT, JOIN
+		:type event_name: str
+		:param param: Parameters to send to the registered functions. Varies from
 		event to event
 		'''
 		if event_name in self.__events:
@@ -111,10 +112,10 @@ class irc(object):
 				event(self,param)
 	def event_register(self,event_name,function):
 		"""Register a new event
-		
-		param event_name: Examples PRIVMSG, CONNECT, JOIN
-		
-		param function: function to be called. Order is not guarenteed
+		:param event_name: Examples PRIVMSG, CONNECT, JOIN
+		:type event_name: str
+		:param function: function to be called. Order is not guarenteed
+		:type function: func
 		"""
 		event_name = event_name.upper()
 		if not event_name in self.__events:
@@ -123,9 +124,10 @@ class irc(object):
 	def event_unregister(self,event_name,function):
 		"""Unregister an event
 		
-		param event_name: Examples PRIVMSG, CONNECT, JOIN
-		
-		param function: function to be unregistered
+		:param event_name: Examples PRIVMSG, CONNECT, JOIN
+		:type event_name: str
+		:param function: function to be unregistered
+		:type function: func
 		"""
 		event_name = event_name.upper()
 		if event_name in self.__events:
