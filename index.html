@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Core IRC Module &mdash; PurpleBot v2.5 documentation</title>
+    <title>Core Bot Functions &mdash; PurpleBot v2.5 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -40,77 +40,46 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="core-irc-module">
-<h1>Core IRC Module<a class="headerlink" href="#core-irc-module" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="bot-events">
-<h2>Bot Events<a class="headerlink" href="#bot-events" title="Permalink to this headline">¶</a></h2>
-<dl class="method">
-<dt id="purplebot.irc.irc.event">
-<tt class="descclassname">irc.</tt><tt class="descname">event</tt><big>(</big><em>event_name</em>, <em>param=None</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.event" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run events</p>
-<p>&#64;param event_name: Examples PRIVMSG, CONNECT, JOIN
-&#64;param param:</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="purplebot.irc.irc.event_register">
-<tt class="descclassname">irc.</tt><tt class="descname">event_register</tt><big>(</big><em>event_name</em>, <em>function</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.event_register" title="Permalink to this definition">¶</a></dt>
-<dd><p>Register a new event</p>
-<p>&#64;param event_name: Examples PRIVMSG, CONNECT, JOIN
-&#64;param function: function to be called. Order is not guarenteed</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="purplebot.irc.irc.event_unregister">
-<tt class="descclassname">irc.</tt><tt class="descname">event_unregister</tt><big>(</big><em>event_name</em>, <em>function</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.event_unregister" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unregister an event</p>
-<p>&#64;param event_name: Examples PRIVMSG, CONNECT, JOIN
-&#64;param function: function to be unregistered</p>
-</dd></dl>
-
-</div>
-<div class="section" id="irc-commands">
-<h2>IRC Commands<a class="headerlink" href="#irc-commands" title="Permalink to this headline">¶</a></h2>
-<dl class="method">
-<dt id="purplebot.irc.irc.irc_raw">
-<tt class="descclassname">irc.</tt><tt class="descname">irc_raw</tt><big>(</big><em>message</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.irc_raw" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="purplebot.irc.irc.irc_join">
-<tt class="descclassname">irc.</tt><tt class="descname">irc_join</tt><big>(</big><em>channel</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.irc_join" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="purplebot.irc.irc.irc_privmsg">
-<tt class="descclassname">irc.</tt><tt class="descname">irc_privmsg</tt><big>(</big><em>dest</em>, <em>msg</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.irc_privmsg" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="purplebot.irc.irc.irc_notice">
-<tt class="descclassname">irc.</tt><tt class="descname">irc_notice</tt><big>(</big><em>dest</em>, <em>message</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.irc_notice" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</div>
-</div>
-<div class="section" id="core-bot-functions">
+  <div class="section" id="core-bot-functions">
 <h1>Core Bot Functions<a class="headerlink" href="#core-bot-functions" title="Permalink to this headline">¶</a></h1>
+<p>When modifying the base bot or writing plugins, these are the methods you will
+typically be interested in</p>
 <div class="section" id="plugins">
 <h2>Plugins<a class="headerlink" href="#plugins" title="Permalink to this headline">¶</a></h2>
+<p>Much of the functionality for the bot comes from registering plugins</p>
 <dl class="method">
 <dt id="purplebot.bot.bot.plugin_register">
 <tt class="descclassname">bot.</tt><tt class="descname">plugin_register</tt><big>(</big><em>module</em><big>)</big><a class="headerlink" href="#purplebot.bot.bot.plugin_register" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Register a new plugin</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>module</strong> (<em>str</em>) &#8211; Module name in dot format. Ex my.plugin</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="purplebot.bot.bot.plugin_unregister">
 <tt class="descclassname">bot.</tt><tt class="descname">plugin_unregister</tt><big>(</big><em>module</em><big>)</big><a class="headerlink" href="#purplebot.bot.bot.plugin_unregister" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Unregister a plugin</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>module</strong> (<em>str</em>) &#8211; Module name in dot format. Ex my.plugin</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="purplebot.bot.bot.plugin_list">
 <tt class="descclassname">bot.</tt><tt class="descname">plugin_list</tt><big>(</big><big>)</big><a class="headerlink" href="#purplebot.bot.bot.plugin_list" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return a list of currently loaded plugins</p>
+</dd></dl>
 
 </div>
 <div class="section" id="commands">
@@ -130,10 +99,208 @@
 <tt class="descclassname">bot.</tt><tt class="descname">command_help</tt><big>(</big><em>cmd</em><big>)</big><a class="headerlink" href="#purplebot.bot.bot.command_help" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</div>
+<div class="section" id="admin">
+<h2>Admin<a class="headerlink" href="#admin" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="purplebot.bot.bot.admin_add">
+<tt class="descclassname">bot.</tt><tt class="descname">admin_add</tt><big>(</big><em>str</em><big>)</big><a class="headerlink" href="#purplebot.bot.bot.admin_add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="purplebot.bot.bot.admin_remove">
+<tt class="descclassname">bot.</tt><tt class="descname">admin_remove</tt><big>(</big><em>str</em><big>)</big><a class="headerlink" href="#purplebot.bot.bot.admin_remove" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="purplebot.bot.bot.admin_check">
+<tt class="descclassname">bot.</tt><tt class="descname">admin_check</tt><big>(</big><em>hostmask</em><big>)</big><a class="headerlink" href="#purplebot.bot.bot.admin_check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="block">
+<h2>Block<a class="headerlink" href="#block" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="purplebot.bot.bot.block_add">
+<tt class="descclassname">bot.</tt><tt class="descname">block_add</tt><big>(</big><em>str</em><big>)</big><a class="headerlink" href="#purplebot.bot.bot.block_add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add name to the blocklist</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="purplebot.bot.bot.block_remove">
+<tt class="descclassname">bot.</tt><tt class="descname">block_remove</tt><big>(</big><em>str</em><big>)</big><a class="headerlink" href="#purplebot.bot.bot.block_remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove name from the block list</p>
+</dd></dl>
+
+</div>
+<div class="section" id="alias">
+<h2>Alias<a class="headerlink" href="#alias" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="purplebot.bot.bot.alias_add">
+<tt class="descclassname">bot.</tt><tt class="descname">alias_add</tt><big>(</big><em>alias</em>, <em>command</em><big>)</big><a class="headerlink" href="#purplebot.bot.bot.alias_add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="purplebot.bot.bot.alias_remove">
+<tt class="descclassname">bot.</tt><tt class="descname">alias_remove</tt><big>(</big><em>alias</em><big>)</big><a class="headerlink" href="#purplebot.bot.bot.alias_remove" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="setting">
+<h2>Setting<a class="headerlink" href="#setting" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="purplebot.bot.bot.setting_get">
+<tt class="descclassname">bot.</tt><tt class="descname">setting_get</tt><big>(</big><em>key</em>, <em>default=None</em>, <em>required=False</em><big>)</big><a class="headerlink" href="#purplebot.bot.bot.setting_get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="purplebot.bot.bot.setting_set">
+<tt class="descclassname">bot.</tt><tt class="descname">setting_set</tt><big>(</big><em>key</em>, <em>value</em><big>)</big><a class="headerlink" href="#purplebot.bot.bot.setting_set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="purplebot.bot.bot.settings_save">
+<tt class="descclassname">bot.</tt><tt class="descname">settings_save</tt><big>(</big><big>)</big><a class="headerlink" href="#purplebot.bot.bot.settings_save" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="purplebot.bot.bot.settings_load">
+<tt class="descclassname">bot.</tt><tt class="descname">settings_load</tt><big>(</big><big>)</big><a class="headerlink" href="#purplebot.bot.bot.settings_load" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+<div class="section" id="core-irc-functions">
+<h1>Core IRC Functions<a class="headerlink" href="#core-irc-functions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="bot-events">
+<h2>Bot Events<a class="headerlink" href="#bot-events" title="Permalink to this headline">¶</a></h2>
+<p>The event system allows you to watch for an event, and register a function to
+be called. Examples of events would be some of the IRC message types such as
+PRIVMSG, JOIN, PART, QUIT, etc.</p>
+<dl class="method">
+<dt id="purplebot.irc.irc.event">
+<tt class="descclassname">irc.</tt><tt class="descname">event</tt><big>(</big><em>event_name</em>, <em>param=None</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run events on named queue
+:param event_name: Examples PRIVMSG, CONNECT, JOIN
+:type event_name: str
+:param param: Parameters to send to the registered functions. Varies from
+event to event</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="purplebot.irc.irc.event_register">
+<tt class="descclassname">irc.</tt><tt class="descname">event_register</tt><big>(</big><em>event_name</em>, <em>function</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.event_register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a new event
+:param event_name: Examples PRIVMSG, CONNECT, JOIN
+:type event_name: str
+:param function: function to be called. Order is not guarenteed
+:type function: func</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="purplebot.irc.irc.event_unregister">
+<tt class="descclassname">irc.</tt><tt class="descname">event_unregister</tt><big>(</big><em>event_name</em>, <em>function</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.event_unregister" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unregister an event</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>event_name</strong> (<em>str</em>) &#8211; Examples PRIVMSG, CONNECT, JOIN</li>
+<li><strong>function</strong> (<em>func</em>) &#8211; function to be unregistered</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="irc-commands">
+<h2>IRC Commands<a class="headerlink" href="#irc-commands" title="Permalink to this headline">¶</a></h2>
+<p>Basic IRC commands. Use these to send messages to the server.</p>
+<dl class="method">
+<dt id="purplebot.irc.irc.irc_raw">
+<tt class="descclassname">irc.</tt><tt class="descname">irc_raw</tt><big>(</big><em>message</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.irc_raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a raw IRC message as is</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="purplebot.irc.irc.irc_nick">
+<tt class="descclassname">irc.</tt><tt class="descname">irc_nick</tt><big>(</big><em>nick</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.irc_nick" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change nick</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="purplebot.irc.irc.irc_part">
+<tt class="descclassname">irc.</tt><tt class="descname">irc_part</tt><big>(</big><em>channel</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.irc_part" title="Permalink to this definition">¶</a></dt>
+<dd><p>Part channel</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="purplebot.irc.irc.irc_notice">
+<tt class="descclassname">irc.</tt><tt class="descname">irc_notice</tt><big>(</big><em>dest</em>, <em>message</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.irc_notice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a notice to a user or channel</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="purplebot.irc.irc.irc_user">
+<tt class="descclassname">irc.</tt><tt class="descname">irc_user</tt><big>(</big><em>ident</em>, <em>host</em>, <em>realname</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.irc_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="purplebot.irc.irc.irc_pong">
+<tt class="descclassname">irc.</tt><tt class="descname">irc_pong</tt><big>(</big><em>response</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.irc_pong" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a response pong</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="purplebot.irc.irc.irc_privmsg">
+<tt class="descclassname">irc.</tt><tt class="descname">irc_privmsg</tt><big>(</big><em>dest</em>, <em>msg</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.irc_privmsg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a PRIVMSG to a user or channel</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="purplebot.irc.irc.irc_quit">
+<tt class="descclassname">irc.</tt><tt class="descname">irc_quit</tt><big>(</big><em>quit=''</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.irc_quit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quit IRC</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="purplebot.irc.irc.irc_ping">
+<tt class="descclassname">irc.</tt><tt class="descname">irc_ping</tt><big>(</big><em>test</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.irc_ping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a ping message to the server</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="purplebot.irc.irc.irc_join">
+<tt class="descclassname">irc.</tt><tt class="descname">irc_join</tt><big>(</big><em>channel</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.irc_join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Join an IRC channel</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="purplebot.irc.irc.irc_mode">
+<tt class="descclassname">irc.</tt><tt class="descname">irc_mode</tt><big>(</big><em>target</em>, <em>modes</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.irc_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set modes on a target user or channel</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="purplebot.irc.irc.irc_ctcp_reply">
+<tt class="descclassname">irc.</tt><tt class="descname">irc_ctcp_reply</tt><big>(</big><em>dest</em>, <em>msg</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.irc_ctcp_reply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a ctcp reply message</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="purplebot.irc.irc.irc_ctcp_send">
+<tt class="descclassname">irc.</tt><tt class="descname">irc_ctcp_send</tt><big>(</big><em>dest</em>, <em>msg</em><big>)</big><a class="headerlink" href="#purplebot.irc.irc.irc_ctcp_send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a ctcp message</p>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 <ul class="simple">
 </ul>
 </div>
+<p>See <a class="reference external" href="http://packages.python.org/an_example_pypi_project/sphinx.html#full-code-example">http://packages.python.org/an_example_pypi_project/sphinx.html#full-code-example</a></p>
 </div>
 </div>
 
@@ -145,14 +312,18 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Core IRC Module</a><ul>
-<li><a class="reference internal" href="#bot-events">Bot Events</a></li>
-<li><a class="reference internal" href="#irc-commands">IRC Commands</a></li>
+<li><a class="reference internal" href="#">Core Bot Functions</a><ul>
+<li><a class="reference internal" href="#plugins">Plugins</a></li>
+<li><a class="reference internal" href="#commands">Commands</a></li>
+<li><a class="reference internal" href="#admin">Admin</a></li>
+<li><a class="reference internal" href="#block">Block</a></li>
+<li><a class="reference internal" href="#alias">Alias</a></li>
+<li><a class="reference internal" href="#setting">Setting</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#core-bot-functions">Core Bot Functions</a><ul>
-<li><a class="reference internal" href="#plugins">Plugins</a></li>
-<li><a class="reference internal" href="#commands">Commands</a><ul>
+<li><a class="reference internal" href="#core-irc-functions">Core IRC Functions</a><ul>
+<li><a class="reference internal" href="#bot-events">Bot Events</a></li>
+<li><a class="reference internal" href="#irc-commands">IRC Commands</a><ul>
 </ul>
 </li>
 </ul>
