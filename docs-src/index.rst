@@ -3,16 +3,33 @@ Core IRC Module
 
 Bot Events
 ----------
+
+The event system allows you to watch for an event, and register a function to
+be called. Examples of events would be some of the IRC message types such as
+PRIVMSG, JOIN, PART, QUIT, etc.
+
 .. automethod:: purplebot.irc.irc.event
 .. automethod:: purplebot.irc.irc.event_register
 .. automethod:: purplebot.irc.irc.event_unregister
 
 IRC Commands
 ------------
+
+Basic IRC commands. Use these to send messages to the server.
+
 .. automethod:: purplebot.irc.irc.irc_raw
-.. automethod:: purplebot.irc.irc.irc_join
-.. automethod:: purplebot.irc.irc.irc_privmsg
+.. automethod:: purplebot.irc.irc.irc_nick
+.. automethod:: purplebot.irc.irc.irc_part
 .. automethod:: purplebot.irc.irc.irc_notice
+.. automethod:: purplebot.irc.irc.irc_user
+.. automethod:: purplebot.irc.irc.irc_pong
+.. automethod:: purplebot.irc.irc.irc_privmsg
+.. automethod:: purplebot.irc.irc.irc_quit
+.. automethod:: purplebot.irc.irc.irc_ping
+.. automethod:: purplebot.irc.irc.irc_join
+.. automethod:: purplebot.irc.irc.irc_mode
+.. automethod:: purplebot.irc.irc.irc_ctcp_reply
+.. automethod:: purplebot.irc.irc.irc_ctcp_send
 
 Core Bot Functions
 ==================
@@ -31,3 +48,5 @@ Commands
 
 .. toctree::
    :maxdepth: 2
+
+See http://packages.python.org/an_example_pypi_project/sphinx.html#full-code-example
