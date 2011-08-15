@@ -19,6 +19,7 @@ html:
 	$(SPHINXBUILD) -b html -c $(SRCDIR) $(ALLSPHINXOPTS) $(SRCDIR) $(BUILDDIR)
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
+	open $(BUILDDIR)/index.html
 
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
