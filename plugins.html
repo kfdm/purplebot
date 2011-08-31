@@ -1,0 +1,200 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Writing Plugins &mdash; PurpleBot v2.5 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '2.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="PurpleBot v2.5 documentation" href="index.html" />
+    <link rel="prev" title="Extending the bot" href="core.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="core.html" title="Extending the bot"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">PurpleBot v2.5 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="writing-plugins">
+<h1>Writing Plugins<a class="headerlink" href="#writing-plugins" title="Permalink to this headline">¶</a></h1>
+<p>A lot of the bot functionality is added through writing additional plugins.
+From the main botj</p>
+<dl class="method">
+<dt id="purplebot.bot.bot.plugin_register">
+<tt class="descclassname">bot.</tt><tt class="descname">plugin_register</tt><big>(</big><em>module</em><big>)</big><a class="headerlink" href="#purplebot.bot.bot.plugin_register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a new plugin</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>module</strong> (<em>str</em>) &#8211; Module name in dot format. Ex my.plugin</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="purplebot.bot.bot.plugin_unregister">
+<tt class="descclassname">bot.</tt><tt class="descname">plugin_unregister</tt><big>(</big><em>module</em><big>)</big><a class="headerlink" href="#purplebot.bot.bot.plugin_unregister" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unregister a plugin</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>module</strong> (<em>str</em>) &#8211; Module name in dot format. Ex my.plugin</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="purplebot.bot.bot.plugin_list">
+<tt class="descclassname">bot.</tt><tt class="descname">plugin_list</tt><big>(</big><big>)</big><a class="headerlink" href="#purplebot.bot.bot.plugin_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of currently loaded plugins</p>
+</dd></dl>
+
+<div class="section" id="example-command">
+<h2>Example Command<a class="headerlink" href="#example-command" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Command plugins will all have this signature where</span>
+<span class="c"># bot is a pointer to the running bot instance</span>
+<span class="c"># hostmask - is a hash of the user invoking the command</span>
+<span class="c"># line - is the PRIVMSG line from IRC</span>
+<span class="k">def</span> <span class="nf">nick</span><span class="p">(</span><span class="n">bot</span><span class="p">,</span><span class="n">hostmask</span><span class="p">,</span><span class="n">line</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Allow an admin to change the bot&#39;s nick at runtime&quot;&quot;&quot;</span>
+        <span class="c"># Public bot functions can easily be called from these functions</span>
+        <span class="n">bot</span><span class="o">.</span><span class="n">irc_nick</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+<span class="c"># Extra function properties are added to control how the plugins function</span>
+
+<span class="c"># The .command property provides the search string for the bot</span>
+<span class="c"># bot to run the command</span>
+<span class="n">nick</span><span class="o">.</span><span class="n">command</span> <span class="o">=</span> <span class="s">&#39;$nick&#39;</span>
+
+<span class="c"># The .example property is used with the .help command to show</span>
+<span class="c"># the usage of the command</span>
+<span class="n">nick</span><span class="o">.</span><span class="n">example</span> <span class="o">=</span> <span class="s">&#39;$nick &lt;Nick&gt;&#39;</span>
+
+<span class="c"># The .admin property is used to restrict commands to users that</span>
+<span class="c"># have been registered as an admin</span>
+<span class="n">nick</span><span class="o">.</span><span class="n">admin</span>      <span class="o">=</span> <span class="bp">True</span>
+
+<span class="c"># The .owner property is used to restrict commands to the single bot</span>
+<span class="c"># owner.</span>
+<span class="n">nick</span><span class="o">.</span><span class="n">owner</span>      <span class="o">=</span> <span class="bp">True</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In the future the help command may come from the first line of the
+function&#8217;s doc string</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In the future the .admin and .owner properties will be changed to use
+some sort of user level</p>
+</div>
+</div>
+<div class="section" id="example-event">
+<h2>Example Event<a class="headerlink" href="#example-event" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Events will have parameters for the bot and the irc line</span>
+<span class="k">def</span> <span class="nf">voice</span><span class="p">(</span><span class="n">bot</span><span class="p">,</span><span class="n">line</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Auto voice users when they join&quot;&quot;&quot;</span>
+        <span class="n">nick</span><span class="p">,</span><span class="n">host</span> <span class="o">=</span> <span class="n">bot</span><span class="o">.</span><span class="n">parse_hostmask</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">voicelist</span> <span class="o">=</span> <span class="n">bot</span><span class="o">.</span><span class="n">setting_get</span><span class="p">(</span><span class="s">&#39;VoicePlugin::list&#39;</span><span class="p">,[])</span>
+        <span class="k">for</span> <span class="n">voice</span> <span class="ow">in</span> <span class="n">voicelist</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">host</span> <span class="o">==</span> <span class="n">voice</span><span class="p">:</span>
+                        <span class="n">bot</span><span class="o">.</span><span class="n">irc_mode</span><span class="p">(</span><span class="s">&#39;#channel&#39;</span><span class="p">,</span><span class="s">&#39;+v </span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="n">nick</span><span class="p">)</span>
+<span class="c"># The event property sets which event queue the function should be</span>
+<span class="c"># Placed on</span>
+<span class="n">voice</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="s">&#39;join&#39;</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Writing Plugins</a><ul>
+<li><a class="reference internal" href="#example-command">Example Command</a></li>
+<li><a class="reference internal" href="#example-event">Example Event</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="core.html"
+                        title="previous chapter">Extending the bot</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/plugins.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="core.html" title="Extending the bot"
+             >previous</a> |</li>
+        <li><a href="index.html">PurpleBot v2.5 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Paul Traylor.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>
