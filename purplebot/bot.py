@@ -8,23 +8,9 @@ import threading
 import signal
 import logging
 
-try: import json
-except ImportError: import simplejson as json
-
-from irc import irc
-
-
-class BotError(Exception):
-	def __init__(self,message):
-		self.message = message
-	def __str__(self):
-		return self.message
-class PluginError(BotError):
-	pass
-class CommandError(BotError):
-	pass
-class CommandDisabledError(BotError):
-	pass
+from purplebot.irc import irc
+from purplebot.settings.jsonsettings import Settings
+from purplebot.errors import *
 
 class BotThread(threading.Thread):
 	def __init__(self, bot, nick, group=None, target=None, name=None, args=(), kwargs=None, verbose=None):
@@ -49,13 +35,14 @@ class BotThread(threading.Thread):
 			raise
 
 class bot(irc):
+	settings = Settings()
+	
 	"""Mostly simple IRC Bot framework"""
 	def __init__ (self,debug=0):
 		irc.__init__(self, debug)
 		self.__logger = logging.getLogger(__name__)
 		
 		self.__plugins = {}
-		self.__settings = {}
 		self.__commands = {}
 		self.__blocks = []
 		self.__timer = {}
@@ -68,12 +55,8 @@ class bot(irc):
 		#Register some internal commands
 		self.plugin_register('core')
 		
-		self.settings_load()
-
-		if not self.__settings.__contains__('Core::Admins'):
-			self.__settings['Core::Admins'] = []
-		if not self.__settings.__contains__('Core::Blocks'):
-			self.__settings['Core::Blocks'] = []
+		self.settings.load()
+		
 		self.block_rebuild()
 		
 		signal.signal(signal.SIGUSR1,self.__reload_plugins)
@@ -109,7 +92,7 @@ class bot(irc):
 					self.__logger.debug('%s has been disabled',cmd.command)
 					return
 				if hasattr(cmd,'owner'):
-					if host != self.__settings.get('Core::Owner',None):
+					if host != self.settings.get('Core::Owner',None):
 						raise CommandError('Command requires Owner')
 				if hasattr(cmd,'admin'):
 					if not self.admin_check({'nick':nick,'host':host}):
@@ -141,13 +124,13 @@ class bot(irc):
 			return
 		self.__settings['Core::Blocks'].append(str)
 		self.block_rebuild()
-		self.settings_save()
+		self.settings.save()
 	def block_remove(self,str):
 		"""Remove name from the block list"""
 		if str in self.__settings['Core::Blocks']:
 			self.__settings['Core::Blocks'].remove(str)
 			self.block_rebuild()
-			self.settings_save()
+			self.settings.save()
 	def block_check(self,str):
 		for block in self.__blocks:
 			#self.__logger.debug('Checking: %s'%block)
@@ -157,25 +140,21 @@ class bot(irc):
 		return False
 	def block_rebuild(self):
 		self.__blocks = []
-		for block in self.__settings['Core::Blocks']:
+		for block in self.settings.get('Core::Blocks',[]):
 			self.__logger.debug('Compiling %s'%block)
 			block = block.replace('*','.*')
 			self.__blocks.append( re.compile(block) )
 	
 	def admin_add(self,str):
-		if str in self.__settings['Core::Admins']:
-			return
-		self.__settings['Core::Admins'].append(str)
-		self.settings_save()
+		self.settings.append('Core::Admins',str)
+		self.settings.save()
 	def admin_remove(self,str):
-		if str in self.__settings['Core::Admins']:
-			self.__settings['Core::Admins'].remove(str)
-			self.settings_save()
+		self.settings.remove('Core::Admins',str)
 	def admin_check(self,hostmask):
 		nick,host = hostmask['nick'],hostmask['host']
-		if host == self.__settings.get('Core::Owner',None):
+		if host == self.settings.get('Core::Owner',None):
 			return True
-		if host in self.__settings['Core::Admins']:
+		if host in self.settings.get('Core::Admins',[]):
 			return True
 		return False
 	def alias_add(self,alias,command):
@@ -250,33 +229,6 @@ class bot(irc):
 					self.__logger.debug('Unloading %s event: %s',obj.event,name)
 					self.event_unregister(obj.event,obj)
 			self.__plugins.pop(module)
-	
-	def setting_get(self,key,default=None,required=False):
-		if key in ['Core::Admins','Core::Blocks','Core::Owner']: return
-		setting = self.__settings.get(key,default)
-		if required and setting is None:
-			raise BotError('Missing required setting '+key)
-		return setting
-	def setting_set(self,key,value):
-		if key in ['Core::Admins','Core::Blocks','Core::Owner']: return
-		self.__settings[key] = value
-	def settings_save(self):
-		try:
-			output = open('settings.js','wb')
-			output.write(json.dumps(self.__settings, sort_keys=True, indent=4))
-			output.close()
-		except:
-			self.__logger.warning('Error writting settings!')
-			if self._debugvar >= 2: raise
-	def settings_load(self):
-		try:
-			input = open('settings.js','rb')
-			self.__settings = json.loads(input.read())
-			input.close()
-		except:
-			self.__logger.warning('Error loading settings')
-			if self._debugvar >= 2: raise
-	
 	def __cmd_version(self,bot,hostmask,line):
 		bot.irc_ctcp_reply(line, '1.1')
 	
@@ -343,4 +295,4 @@ class bot(irc):
 		threading.Timer(time,func,args).start()
 	
 	def __str__(self):
-		return '%s'%(self.__settings)
+		return '%s'%(self.settings)
