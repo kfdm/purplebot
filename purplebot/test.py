@@ -1,6 +1,10 @@
+import logging
 from bot import bot
-import sys,string
+
+logging.basicConfig(level=logging.ERROR)
+
 class testbot(bot):
+	"""Simple offline bot testing framework"""
 	def connect(self,host,port,nick,ident,realname):
 		self._host = host
 		self._port = port
@@ -8,11 +12,7 @@ class testbot(bot):
 		self._ident = ident
 		self._realname = realname
 		
-		#self.irc_nick(self._nick)
-		#self.irc_user(self._ident, self._host, self._realname)
-		
-		#for event in self._events_connect:
-		#	event(self)
+		self.event('CONNECT')
 	def disconnect(self,quit=''):
 		self._exit = True
 		self.irc_quit(quit)
@@ -20,6 +20,13 @@ class testbot(bot):
 			self._logger.close()
 	def irc_raw(self,message):
 		print message.strip()
-		self.log('<< %s'%message)
 	def run(self):
 		pass
+	def dump_events(self):
+		"""Dump the events list to the screen"""
+		print self._irc__events
+	def parse_file(self,irc_logfile):
+		"""Simulate the bot by using a raw irc log"""
+		self.connect('localhost',6667,'testbot','testbot','testbot')
+		for line in open(irc_logfile):
+			self._parse_line(line)
