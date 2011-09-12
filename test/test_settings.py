@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import unittest
-
 from purplebot.test import testbot
 
 class TestSettings(unittest.TestCase):
