@@ -16,6 +16,13 @@ formatter = logging.Formatter(_format_console)
 console.setFormatter(formatter)
 logging.getLogger('').addHandler(console)
 
+# Raw IRC Log
+irc = logging.FileHandler('irc.log')
+irc.setLevel(logging.NOTSET)
+irc.setFormatter( logging.Formatter('%(message)s') )
+logging.getLogger('irc.in').addHandler(irc)
+logging.getLogger('irc.out').addHandler(irc)
+
 HOST="irc.gamesurge.net"
 PORT=6667
 NICK="PurpleBot"
