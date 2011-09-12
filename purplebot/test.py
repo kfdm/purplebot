@@ -1,5 +1,5 @@
 import logging
-from bot import bot
+from purplebot.bot import bot
 
 logging.basicConfig(level=logging.ERROR)
 
@@ -30,3 +30,5 @@ class testbot(bot):
 		self.connect('localhost',6667,'testbot','testbot','testbot')
 		for line in open(irc_logfile):
 			self._parse_line(line)
+	def __str__(self):
+		return self.__settings.__str__()

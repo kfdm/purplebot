@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import os
 import logging
 from purplebot.bot import bot
@@ -43,7 +44,7 @@ sample.plugin_register('voice')
 sample.alias_add('$ignore','$addblock')
 
 #Settings
-sample.setting_set('Setting::key','Setting Value')
+sample.settings.set('Setting::key','Setting Value')
 
 #Have functions fire after a certain delay
 def join(bot,channels):
