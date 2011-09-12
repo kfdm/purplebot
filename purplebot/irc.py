@@ -5,14 +5,17 @@ import signal
 import logging
 
 class irc(object):
-	def __init__ (self,debug=1,log=True):
+	"""Core IRC methods"""
+	def __init__ (self,debug=1):
+		"""Initialize the bot
+		:param debug: debug level
+		"""
 		self.buffer = ''
 		
 		self.running		= True
 		self.connected		= False
 		self._exit 			= False
 		self._debugvar 		= debug
-		self._logvar 		= log
 		self.__logger		= logging.getLogger(__name__)
 		self.__log_in		= logging.getLogger('irc.in')
 		self.__log_out		= logging.getLogger('irc.out')
@@ -49,22 +52,27 @@ class irc(object):
 		while self.running:
 			tmp = self._socket.read()
 			if tmp:
-				self.parse_line(tmp)
+				self._parse_line(tmp)
 		self._socket.close()
-	
-	def log(self,msg):
-		raise Exception('test')
-	def debug(self,msg):
-		raise Exception('test')
 	
 	###########################################################################
 	# Parsing Functions
 	###########################################################################
-	def parse_line(self,line):
+	_parse_events = [
+		'PRIVMSG',
+		'NOTICE',
+		'JOIN',
+		'PART',
+		'PONG',
+		'MODE',
+		'NICK',
+	]
+	def _parse_line(self,line):
+		"""Parse an incoming message from the irc server"""
 		self.__log_in.debug(line)
 		message=string.rstrip(line).split(' ',4)
 		try:
-			if message[1] in self.__events:
+			if message[1] in self._parse_events:
 				self.event(message[1],message)
 			elif(message[1]=="PONG"):
 				self.irc_ping(message[2])
@@ -87,26 +95,45 @@ class irc(object):
 			if self._debugvar >= 2:
 				self.running = False
 				raise
-			
+	
 	###########################################################################
 	# Event Functions
 	###########################################################################
-	def event(self,key,param=None):
-		if key in self.__events:
-			for event in self.__events[key]:
-				logging.getLogger('events').info('%s|%s',key,param)
+	def event(self,event_name,param=None):
+		'''Run events on named queue
+		:param event_name: Examples PRIVMSG, CONNECT, JOIN
+		:type event_name: str
+		:param param: Parameters to send to the registered functions. Varies from
+		event to event
+		'''
+		if event_name in self.__events:
+			for event in self.__events[event_name]:
+				logging.getLogger('events').info('%s|%s',event_name,param)
 				event(self,param)
-	def event_register(self,key,function):
-		key = key.upper()
-		if not key in self.__events:
-			self.__events[key] = []
-		self.__events[key].append(function)
-	def event_unregister(self,key,function):
-		key = key.upper()
-		if key in self.__events:
-			self.__events[key].remove(function)
-			if len(self.__events[key]) == 0:
-				self.__events.pop(key)
+	def event_register(self,event_name,function):
+		"""Register a new event
+		:param event_name: Examples PRIVMSG, CONNECT, JOIN
+		:type event_name: str
+		:param function: function to be called. Order is not guarenteed
+		:type function: func
+		"""
+		event_name = event_name.upper()
+		if not event_name in self.__events:
+			self.__events[event_name] = []
+		self.__events[event_name].append(function)
+	def event_unregister(self,event_name,function):
+		"""Unregister an event
+		
+		:param event_name: Examples PRIVMSG, CONNECT, JOIN
+		:type event_name: str
+		:param function: function to be unregistered
+		:type function: func
+		"""
+		event_name = event_name.upper()
+		if event_name in self.__events:
+			self.__events[event_name].remove(function)
+			if len(self.__events[event_name]) == 0:
+				self.__events.pop(event_name)
 			
 	def __irc_timeout(self,bot,time):
 		if time - self._last_msg > self.__TIMEOUT:
@@ -116,29 +143,41 @@ class irc(object):
 	# IRC Functions
 	###########################################################################
 	def irc_raw(self,message):
+		"""Send a raw IRC message as is"""
 		self._socket.write(message.encode('utf-8'))
 		self.__log_out.debug(message.encode('utf-8').strip())
 	def irc_nick(self,nick):
+		"""Change nick"""
 		self.irc_raw("NICK %s\r\n" % nick)
 	def irc_part(self,channel):
+		"""Part channel"""
 		self.irc_raw("PART :%s\r\n" % channel)
 	def irc_notice(self,dest,message):
+		"""Send a notice to a user or channel"""
 		self.irc_raw("NOTICE %s :%s\r\n" % (dest, message))
 	def irc_user(self,ident,host,realname):
 		self.irc_raw("USER %s %s bla :%s\r\n" % (ident,host,realname))
 	def irc_pong(self,response):
+		"""Send a response pong"""
 		self.irc_raw("PONG %s\r\n" % response)
 	def irc_privmsg(self,dest,msg):
+		"""Send a PRIVMSG to a user or channel"""
 		self.irc_raw("PRIVMSG %s :%s\r\n" % (dest, msg))
 	def irc_quit(self,quit=""):
+		"""Quit IRC"""
 		self.irc_raw("QUIT %s\r\n" % quit)
 	def irc_ping(self,test):
+		"""Send a ping message to the server"""
 		self.irc_raw("PING %s\r\n" % test)
 	def irc_join(self,channel):
+		"""Join an IRC channel"""
 		self.irc_raw("JOIN %s\r\n" % channel)
 	def irc_mode(self,target,modes):
+		"""Set modes on a target user or channel"""
 		self.irc_raw('MODE %s %s\r\n'%(target,modes))
 	def irc_ctcp_reply(self,dest,msg):
+		"""Send a ctcp reply message"""
 		self.irc_notice(dest, '\x01%s\x01'%msg)
 	def irc_ctcp_send(self,dest,msg):
+		"""Send a ctcp message"""
 		self.irc_privmsg(dest, '\x01%s\x01'%msg)
