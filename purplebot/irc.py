@@ -96,7 +96,7 @@ class irc(object):
 	###########################################################################
 	# Event Functions
 	###########################################################################
-	def event(self,event_name,param=None):
+	def event(self,event_name,*args):
 		'''Run events on named queue
 		:param event_name: Examples PRIVMSG, CONNECT, JOIN
 		:type event_name: str
@@ -105,8 +105,8 @@ class irc(object):
 		'''
 		if event_name in self.__events:
 			for event in self.__events[event_name]:
-				logging.getLogger('events').info('%s|%s',event_name,param)
-				event(self,param)
+				logging.getLogger('events').info('%s|%s',event_name,*args)
+				event(self,*args)
 	def event_register(self,event_name,function):
 		"""Register a new event
 		:param event_name: Examples PRIVMSG, CONNECT, JOIN
