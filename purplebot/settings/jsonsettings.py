@@ -8,7 +8,8 @@ try:
 except ImportError:
 	import simplejson as json
 
-#from purplebot.bot import BotError
+#import purplebot.bot
+from purplebot.bot import BotError
 
 restricted = ['Core::Admins','Core::Blocks','Core::Owner']
 
@@ -17,14 +18,18 @@ class Settings(object):
 		self.__settings = {}
 		self.file = os.path.abspath('settings.json')
 	
-	def get(self,key,default=None,required=False):
-		setting = self.__settings.get(key,default)
-		if required and setting is None:
+	def __getitem__(self,key):
+		return self.__settings[key]
+	def __setitem__(self,key,value):
+		self.__settings[key] = value
+	
+	def required(self,key):
+		if key not in self.__settings:
 			raise BotError('Missing required setting '+key)
-		return setting
+		return self.__settings[key]
+	def get(self,key,default=None):
+		return self.__settings.get(key,default)
 	def set(self,key,value):
-		if key in restricted:
-			return
 		self.__settings[key] = value
 	def append(self,key,value):
 		if value in self.__settings[key]:
@@ -41,14 +46,18 @@ class Settings(object):
 			output.write(json.dumps(self.__settings, sort_keys=True, indent=4))
 			output.close()
 			logger.debug('Settings saved')
+			return True
 		except:
 			logger.exception('Error writting settings!')
+			return False
 	def load(self):
 		try:
 			input = open(self.file,'rb')
 			self.__settings = json.loads(input.read())
 			input.close()
 			logger.debug('Settings loaded')
+			return True
 		except:
 			logger.exception('Error loading settings')
+			return False
 	

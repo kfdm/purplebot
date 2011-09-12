@@ -3,6 +3,7 @@
 
 #Settings Files
 *.js
+*.json
 *.pid
 
 # Generated docs
