@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import unittest
 from purplebot.test import testbot
+from purplebot.errors import BotError
 
 class TestSettings(unittest.TestCase):
 	"""Test the settings within the framework of the bot"""
@@ -30,4 +31,5 @@ class TestSettings(unittest.TestCase):
 	
 	def test_required(self):
 		key = 'requiredvalue'
-		assert self.bot.settings.required(key)
+		with self.assertRaises(BotError):
+			self.bot.settings.required(key)
