@@ -3,7 +3,8 @@
 
 #Settings Files
 *.js
+*.json
 *.pid
 
 # Generated docs
-docs-src/doctrees*
+build/*
