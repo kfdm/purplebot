@@ -86,7 +86,7 @@ class irc(object):
 					self.running = False
 				else:
 					message = ' '.join(message)
-					self.__logger.error("--Unknown message-- "+message)
+					self.__logger.warning("--Unknown message-- "+message)
 		except Exception,e:
 			self.__logger.warning('Error parsing line: %s'%line)
 			if self._debugvar >= 2:
