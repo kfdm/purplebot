@@ -8,9 +8,6 @@ class testbot(bot):
 		self._ident = ident
 		self._realname = realname
 		
-		if(self._logvar):
-			self._logger = open('%s.log'%(nick),'a')
-		
 		#self.irc_nick(self._nick)
 		#self.irc_user(self._ident, self._host, self._realname)
 		

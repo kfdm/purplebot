@@ -42,9 +42,6 @@ class irc(object):
 		self._ident = ident
 		self._realname = realname
 		
-		if(self._logvar):
-			self._logger = open('%s.log'%(nick),'a')
-		
 		self._socket = ircsocket.ircsocket()
 		self._socket.connect(host,port)
 		self.irc_nick(self._nick)
