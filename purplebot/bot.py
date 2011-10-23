@@ -3,7 +3,6 @@ import os
 import string
 import re
 import time
-import imp
 import threading
 import signal
 import logging
@@ -50,10 +49,8 @@ class bot(irc):
 		#Register command handler on privmsg event queue
 		self.event_register('PRIVMSG',self.__parse_commands)
 		
-		self.plugindir = os.path.realpath(os.path.join(os.path.dirname(__file__),'../plugins'))
-		
 		#Register some internal commands
-		self.plugin_register('core')
+		self.plugin_register('purplebot.plugins.core')
 		
 		self.settings.load()
 		
@@ -178,15 +175,24 @@ class bot(irc):
 		:type module: str
 		"""
 		if module in self.__plugins.keys():
+			self.__logger.warning('Already loaded module %s', module)
 			return True
 		
-		path	= module.replace('.','/')+'.py'
-		module	= module.replace('.','_')
-		path = os.path.join(self.plugindir,path)
 		try:
-			mod = imp.load_source(module,path)
+			# We want to split off the last part of the module name
+			# so that we can get just the module we want instead of
+			# the entire stack
+			name = module.split('.').pop()
+			mod = __import__(module, fromlist=[name])
+			self.__logger.info('Registering %s', mod.__purple__)
+		except ImportError, e:
+			self.__logger.exception('Error importing %s', module)
+			return False
+		except AttributeError, e:
+			self.__logger.warning('Incomptable module %s', module)
+			return False
 		except Exception,e:
-			self.__logger.exception( 'Error loading plugin %s',path)
+			self.__logger.exception( 'Unknown Error loading plugin %s', module)
 			if self._debugvar >= 2: raise
 			return False
 		else:
