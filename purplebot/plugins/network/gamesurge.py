@@ -1,3 +1,5 @@
+__purple__ = __name__
+
 def auth(bot):
 	authserv = bot.setting_get('GamesurgePlugin::authserv')
 	authstr = bot.setting_get('GamesurgePlugin::authstring')

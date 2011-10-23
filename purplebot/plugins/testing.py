@@ -1,3 +1,5 @@
+__purple__ = __name__
+
 def raw(bot,hostmask,line):
 	bot.irc_raw(line[4]+'\r\n')
 raw.command = '$raw'

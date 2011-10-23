@@ -1,3 +1,5 @@
+__purple__ = __name__
+
 def command_enable(bot,hostmask,line):
 	if line[4] in ['$enable','$disable']: return
 	bot.command_enable(line[4])

@@ -37,8 +37,8 @@ CHANNELS=["#bottesting"]
 sample = bot(2)
 
 #Load plugins
-sample.plugin_register('admin')
-sample.plugin_register('voice')
+sample.plugin_register('purplebot.plugins.admin')
+sample.plugin_register('purplebot.plugins.voice')
 
 #Add command aliases
 sample.alias_add('$ignore','$addblock')

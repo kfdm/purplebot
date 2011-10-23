@@ -1,3 +1,5 @@
+__purple__ = __name__
+
 def nick(bot,hostmask,line):
 	bot.irc_nick(line[4])
 nick.command = '$nick'

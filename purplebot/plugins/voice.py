@@ -1,3 +1,5 @@
+__purple__ = __name__
+
 def voice(bot,line):
 	nick,host = bot.parse_hostmask(line[0])
 	voicelist = bot.setting_get('VoicePlugin::list',[])
