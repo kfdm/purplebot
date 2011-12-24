@@ -1,10 +1,20 @@
 #!/usr/bin/env python
-from distutils.core import setup
-from tasks.clean import CleanCommand
-from tasks.test import TestCommand
+from setuptools import setup, find_packages
 
 setup(
-	name = 'PurpleBot',
-	description = 'Mostly simple irc bot',
-	cmdclass = { 'test': TestCommand, 'clean': CleanCommand }
+    name='PurpleBot',
+    description='Mostly simple irc bot',
+    author='Paul Traylor',
+    url='http://github.com/kfdm/purplebot/',
+    version='0.1',
+    packages=find_packages(exclude=['test']),
+    # http://pypi.python.org/pypi?%3Aaction=list_classifiers
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Intended Audience :: Developers',
+        'Natural Language :: English',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python',
+        'Operating System :: OS Independent',
+    ],
 )
