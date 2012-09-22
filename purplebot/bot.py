@@ -1,6 +1,5 @@
 """Basic IRC Bot"""
 import string
-import re
 import time
 import threading
 import signal
