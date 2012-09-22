@@ -21,4 +21,5 @@ purplebot/plugins/network/__init__.py
 purplebot/plugins/network/gamesurge.py
 purplebot/settings/__init__.py
 purplebot/settings/jsonsettings.py
+test/test_hostname.py
 test/test_settings.py
