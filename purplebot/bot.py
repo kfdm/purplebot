@@ -45,7 +45,6 @@ class bot(irc):
 
 		self.__plugins = {}
 		self.__commands = {}
-		self.__blocks = []
 		self.__timer = {}
 
 		#Register command handler on privmsg event queue
