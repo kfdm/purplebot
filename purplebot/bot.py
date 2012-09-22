@@ -9,6 +9,7 @@ import logging
 from purplebot.irc import irc
 from purplebot.settings.jsonsettings import Settings
 from purplebot.errors import *
+from purplebot.util import BlockList
 
 
 class BotThread(threading.Thread):
@@ -55,8 +56,7 @@ class bot(irc):
 		self.plugin_register('purplebot.plugins.core')
 
 		self.settings.load()
-
-		self.block_rebuild()
+		self.block = BlockList(self.settings)
 
 		signal.signal(signal.SIGUSR1, self.__reload_plugins)
 
@@ -75,7 +75,7 @@ class bot(irc):
 			nick, host = self.parse_hostmask(line[0])
 			if(nick == self._nick):
 				return  # Bot doesn't need to parse it's own messages
-			if self.block_check(line[0]):
+			if self.block.check(line[0]):
 				return  # Ignore messages from blocked users
 			line[3] = string.lstrip(line[3], ':')
 
@@ -118,36 +118,6 @@ class bot(irc):
 		tmp = hostmask.lstrip(':').split('!')
 		self.__logger.debug("--hostmask--(%s)(%s)(%s)", hostmask, tmp[0], tmp[1])
 		return tmp[0], tmp[1]
-
-	def block_add(self, str):
-		"""Add name to the blocklist"""
-		if str in self.__settings['Core::Blocks']:
-			return
-		self.__settings['Core::Blocks'].append(str)
-		self.block_rebuild()
-		self.settings.save()
-
-	def block_remove(self, str):
-		"""Remove name from the block list"""
-		if str in self.__settings['Core::Blocks']:
-			self.__settings['Core::Blocks'].remove(str)
-			self.block_rebuild()
-			self.settings.save()
-
-	def block_check(self, str):
-		for block in self.__blocks:
-			#self.__logger.debug('Checking: %s'%block)
-			if block.search(str):
-				#self.__logger.debug('Blocking: %s'%block)
-				return True
-		return False
-
-	def block_rebuild(self):
-		self.__blocks = []
-		for block in self.settings.get('Core::Blocks', []):
-			self.__logger.debug('Compiling %s' % block)
-			block = block.replace('*', '.*')
-			self.__blocks.append(re.compile(block))
 
 	def admin_add(self, str):
 		self.settings.append('Core::Admins', str)

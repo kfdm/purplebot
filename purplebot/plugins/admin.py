@@ -29,11 +29,11 @@ deladmin.command = '$deladmin'
 deladmin.admin = True
 		
 def addblock(bot,hostmask,line):
-	bot.block_add(line[4])
+	bot.block.add(line[4])
 addblock.command = '$addblock'
 addblock.admin = True
 		
 def delblock(bot,hostmask,line):
-	bot.block_remove(line[4])
+	bot.block.remove(line[4])
 delblock.command = '$delblock'
 delblock.admin = True
