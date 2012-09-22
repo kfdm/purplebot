@@ -1,5 +1,6 @@
 # Log Files
 *.log
+.coverage
 
 #Settings Files
 *.js
@@ -9,3 +10,4 @@
 # Generated docs
 build/*
 dist/*
+cover/*

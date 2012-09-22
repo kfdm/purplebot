@@ -19,4 +19,4 @@ def clean():
 
 def test():
     'Run tests'
-    local('py.test')
+    local('nosetests --with-coverage --cover-html --cover-package=purplebot')
