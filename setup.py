@@ -17,4 +17,9 @@ setup(
         'Programming Language :: Python',
         'Operating System :: OS Independent',
     ],
+    entry_points={
+        'console_scripts': [
+                'purplebot = purplebot.cli.console:main'
+        ]
+    }
 )
