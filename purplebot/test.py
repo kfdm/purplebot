@@ -32,3 +32,5 @@ class testbot(bot):
 			self._parse_line(line)
 	def __str__(self):
 		return self.__settings.__str__()
+
+
