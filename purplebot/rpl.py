@@ -3,6 +3,7 @@ import logging
 import code
 import sys
 
+from pprint import pprint
 from purplebot.test import testbot
 
 
@@ -20,7 +21,7 @@ class RPL(cmd.Cmd):
 
     def do_shell(self, line):
         """Jump into a Python Shell"""
-        env = {'bot': self.bot}
+        env = {'bot': self.bot, 'pprint': pprint}
         try:
             import readline
         except ImportError:
