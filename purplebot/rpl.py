@@ -1,6 +1,8 @@
 import cmd
 import logging
 import code
+import sys
+
 from purplebot.test import testbot
 
 
@@ -18,7 +20,20 @@ class RPL(cmd.Cmd):
 
     def do_shell(self, line):
         """Jump into a Python Shell"""
-        code.interact(local={'bot': self.bot})
+        env = {'bot': self.bot}
+        try:
+            import readline
+        except ImportError:
+            pass
+        else:
+            import rlcompleter
+            readline.set_completer(rlcompleter.Completer(env).complete)
+            if(sys.platform == 'darwin'):
+                readline.parse_and_bind("bind ^I rl_complete")
+            else:
+                readline.parse_and_bind("tab:complete")
+
+        code.interact(local=env)
 
     def emptyline(self):
         pass
