@@ -31,7 +31,9 @@ class Settings(object):
 			raise BotError('Missing required setting ' + key)
 		return self.__settings[key]
 
-	def get(self, key, default=None):
+	def get(self, key, default=None, required=False):
+		if required:
+			return self.required(key)
 		return self.__settings.get(key, default)
 
 	def set(self, key, value):
