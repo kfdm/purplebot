@@ -53,7 +53,7 @@ listplugins.command = '$plugins'
 listplugins.admin = True
 	
 def get_setting(bot,hostmask,line):
-	value = bot.setting_get(line[4])
+	value = bot.settings.get(line[4])
 	bot.irc_notice(hostmask['nick'],'[%s] - [%s]'%(line[4],value))
 
 get_setting.command = '$get'
