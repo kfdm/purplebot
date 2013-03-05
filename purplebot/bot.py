@@ -227,36 +227,6 @@ class bot(irc):
 			cmd = self.__commands[cmd]
 			cmd.disabled = True
 
-	def timer(self, name, value=None):
-		if(value == None):
-			value = 30
-		tmp = self.__timer.get(name, False)
-		if tmp != False:
-			now = int(time.time())
-			if (now - tmp) > value:
-				self.__timer[name] = now
-				return True
-			else:
-				return value - (now - tmp)
-		self.__timer[name] = int(time.time())
-		return True
-
-	__ratelimit = threading.Lock()
-
-	def ratelimit(self, key, timeout, nick=None):
-		self.__ratelimit.acquire()
-		timeout = self.timer(key, timeout)
-		self.__ratelimit.release()
-
-		if timeout == True:
-			return False
-		if nick != None:
-			if timeout > 60:
-				self.irc_notice(nick, 'Please wait %d minutes before using that command again' % (timeout / 60))
-			else:
-				self.irc_notice(nick, 'Please wait %d seconds before using that command again' % timeout)
-		return True
-
 	def timedelay(self, time, func, args):
 		threading.Timer(time, func, args).start()
 
