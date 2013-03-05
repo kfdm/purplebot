@@ -11,30 +11,6 @@ from purplebot.errors import *
 from purplebot.util import BlockList
 
 
-class BotThread(threading.Thread):
-	def __init__(self, bot, nick, group=None, target=None, name=None, args=(), kwargs=None, verbose=None):
-		threading.Thread.__init__(self, group, target, name, args, kwargs, verbose)
-		self.bot = bot
-		self.nick = nick
-
-	def run(self):
-		try:
-			if self._Thread__target:
-				self._Thread__target(*self._Thread__args, **self._Thread__kwargs)
-		except CommandError, e:
-			logging.getLogger(__name__).exception('Command Error')
-			self.bot.irc_notice(self.nick, 'CommandError: %s' % e)
-			raise
-		except PluginError, e:
-			logging.getLogger(__name__).exception('Plugin Error')
-			self.bot.irc_notice(self.nick, 'PluginError: %s' % e)
-			raise
-		except Exception, e:
-			logging.getLogger(__name__).exception('Unknown Exception')
-			self.bot.irc_notice(self.nick, 'Unknown Exception')
-			raise
-
-
 class bot(irc):
 	settings = Settings()
 
@@ -95,8 +71,7 @@ class bot(irc):
 					if not self.admin_check({'nick': nick, 'host': host}):
 						raise CommandError('Command requires Admin')
 				if hasattr(cmd, 'thread') and cmd.thread == True:
-					self.__logger.debug('Running %s in a thread', cmd.__name__)
-					BotThread(self, nick, target=cmd, args=(self, {'nick': nick, 'host': host}, line)).start()
+					raise CommandError('Does not support threading')
 				else:
 					cmd(self, {'nick': nick, 'host': host}, line)
 		except CommandError, e:
