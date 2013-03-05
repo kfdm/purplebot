@@ -51,10 +51,15 @@ def _time_to_words(value):
 	return '%d seconds' % value
 
 
-def ratelimit(key, value):
-	'''Enforce a rate limit for bot commands'''
+def ratelimit(key, value, alert=True):
+	'''Enforce a rate limit for bot commands
+
+	:params string key: Rate limit key to check against
+	:params int value: Rate limit timeout
+	:params boolean alert: Send a NOTICE to users who have hit the rate limit
+	'''
 	def wrap(func):
-		def wrapped(bot, hostmask, line):
+		def wrapped(bot, hostmask, line, *args, **kwargs):
 			key = func.__module__ + '.' + func.__name__
 			timeout = bot.settings.get(key, value)
 
@@ -62,8 +67,8 @@ def ratelimit(key, value):
 
 			expired = ratelimit_expired(key, timeout)
 			if expired is True:
-				return func(bot, hostmask, line)
-			elif hostmask is not None:
+				return func(bot, hostmask, line, *args, **kwargs)
+			elif hostmask is not None and alert is True:
 				bot.irc_notice(hostmask['nick'], 'Please wait %s before using that command again' % _time_to_words(expired))
 
 		wrapped.__name__ = func.__name__
