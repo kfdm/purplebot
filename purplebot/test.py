@@ -1,6 +1,17 @@
 import logging
 import sys
 from purplebot.bot import bot
+from purplebot.cli.console import LOG_FORMAT
+
+colors = {
+	logging.WARNING: "\033[1;31m%s\033[1;m",
+	logging.ERROR: "\033[1;41m%s\033[1;m",
+	logging.INFO: "\033[1;32m%s\033[1;m",
+	logging.DEBUG: "\033[1;33m%s\033[1;m",
+}
+
+for k in colors:
+	logging.addLevelName( k, colors[k] % logging.getLevelName(k))
 
 
 class testbot(bot):
@@ -40,7 +51,8 @@ class testbot(bot):
 
 
 def main():
-	logging.basicConfig(level=logging.DEBUG)
+	logging.basicConfig(level=logging.DEBUG,format=LOG_FORMAT)
+
 	test = testbot(debug=1)
 	test.connect('localhost', 6667, 'testbot', 'testbot', 'testbot')
 	for line in sys.stdin.readlines():

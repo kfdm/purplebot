@@ -5,6 +5,7 @@ import sys
 
 from pprint import pprint
 from purplebot.test import testbot
+from purplebot.cli.console import LOG_FORMAT
 
 
 class RPL(cmd.Cmd):
@@ -46,7 +47,7 @@ class RPL(cmd.Cmd):
 
 
 def main():
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
     cli = RPL()
     cli.do_spawn()
     cli.cmdloop()
