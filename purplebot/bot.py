@@ -26,7 +26,7 @@ class bot(irc):
 		self.__commands = {}
 
 		#Register command handler on privmsg event queue
-		self.event_register('PRIVMSG', self.__parse_commands)
+		self.event.register('PRIVMSG', self.__parse_commands)
 
 		#Register some internal commands
 		self.plugin_register('purplebot.plugins.core')
@@ -132,7 +132,7 @@ class bot(irc):
 					self.__commands[obj.command] = obj
 				if hasattr(obj, 'event'):
 					logger.info('Loading %s event: %s', obj.event, name)
-					self.event_register(obj.event, obj)
+					self.event.register(obj.event, obj)
 
 	def plugin_unregister(self, module):
 		"""Unregister a plugin
@@ -160,7 +160,7 @@ class bot(irc):
 					self.__commands.pop(obj.command)
 				if hasattr(obj, 'event'):
 					logger.debug('Unloading %s event: %s', obj.event, name)
-					self.event_unregister(obj.event, obj)
+					self.event.unregister(obj.event, obj)
 			self.__plugins.pop(module)
 
 	def __cmd_version(self, bot, hostmask, line):
@@ -169,7 +169,7 @@ class bot(irc):
 	def kill(self):
 		for p in self.__plugins.keys():
 			self.plugin_unregister(p)
-		self.event_unregister('PRIVMSG', self.__parse_commands)
+		self.event.unregister('PRIVMSG', self.__parse_commands)
 		self.running = False
 
 	def command_help(self, cmd):

@@ -4,9 +4,12 @@ import ircsocket
 import signal
 import logging
 
+from purplebot.event import EventDelegate
+
 __all__ = ['irc']
 
 logger = logging.getLogger(__name__)
+
 
 class irc(object):
 	"""Core IRC methods"""
@@ -20,8 +23,8 @@ class irc(object):
 		self._debugvar = debug
 		self._last_msg = time.time()
 
-		self.__events = {}
-		self.event_register('timer', self.__irc_timeout)
+		self.event = EventDelegate()
+		self.event.register('timer', self.__irc_timeout)
 
 		signal.signal(signal.SIGINT, self.__sig_term)
 		signal.signal(signal.SIGTERM, self.__sig_term)
@@ -87,49 +90,6 @@ class irc(object):
 					logger.warning("--Unknown message-- " + message)
 		except Exception:
 			logger.exception('Error parsing line: %s' % line)
-
-	###########################################################################
-	# Event Functions
-	###########################################################################
-	def event(self, event_name, *args):
-		'''Run events on named queue
-		:param event_name: Examples PRIVMSG, CONNECT, JOIN
-		:type event_name: str
-		:param param: Parameters to send to the registered functions. Varies from
-		event to event
-		'''
-		if event_name in self.__events:
-			for event in self.__events[event_name]:
-				logger.debug('Processing Event: %s | %s', event_name, args)
-				event(self, *args)
-		else:
-			logger.warning('No events found for: %s', event_name)
-
-	def event_register(self, event_name, function):
-		"""Register a new event
-		:param event_name: Examples PRIVMSG, CONNECT, JOIN
-		:type event_name: str
-		:param function: function to be called. Order is not guarenteed
-		:type function: func
-		"""
-		event_name = event_name.upper()
-		if not event_name in self.__events:
-			self.__events[event_name] = []
-		self.__events[event_name].append(function)
-
-	def event_unregister(self, event_name, function):
-		"""Unregister an event
-
-		:param event_name: Examples PRIVMSG, CONNECT, JOIN
-		:type event_name: str
-		:param function: function to be unregistered
-		:type function: func
-		"""
-		event_name = event_name.upper()
-		if event_name in self.__events:
-			self.__events[event_name].remove(function)
-			if len(self.__events[event_name]) == 0:
-				self.__events.pop(event_name)
 
 	def __irc_timeout(self, bot, time):
 		if time - self._last_msg > self.__TIMEOUT:
