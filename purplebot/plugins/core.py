@@ -1,24 +1,26 @@
 __purple__ = __name__
 
+from purplebot.decorators import require_admin, require_owner
+
+@require_owner
 def command_enable(bot,hostmask,line):
 	if line[4] in ['$enable','$disable']: return
 	bot.command_enable(line[4])
 command_enable.command = '$enable'
-command_enable.owner = True
 
+@require_owner
 def command_disable(bot,hostmask,line):
 	if line[4] in ['$enable','$disable']: return
 	bot.command_disable(line[4])
 command_disable.command = '$disable'
-command_disable.owner = True
 
+@require_admin
 def kill(bot,hostmask,line):
 	nick,host = hostmask['nick'],hostmask['host']
 	bot.irc_notice(nick, 'Bot is shutting down')
 	bot.irc_quit()
 	bot.kill()
 kill.command = '$kill'
-kill.admin = True
 
 def help(bot,hostmask,line):
 	nick,host = hostmask['nick'],hostmask['host']
@@ -27,38 +29,38 @@ def help(bot,hostmask,line):
 help.command = '.help'
 help.example = '.help <commandname>'
 
+@require_admin
 def loadplugin(bot,hostmask,line):
 	for p in line[4].split(','):
 		bot.plugin_register(p)
 loadplugin.command = '$loadplugin'
-loadplugin.admin = True
 
+@require_admin
 def unloadplugin(bot,hostmask,line):
 	for p in line[4].split(','):
 		if p == 'core': continue
 		bot.plugin_unregister(p)
 unloadplugin.command = '$unloadplugin'
-unloadplugin.admin = True
 
+@require_admin
 def reloadplugin(bot,hostmask,line):
 	unloadplugin(bot, hostmask, line)
 	loadplugin(bot, hostmask, line)
 reloadplugin.command = '$reloadplugin'
-reloadplugin.admin = True
 
+@require_admin
 def listplugins(bot,hostmask,line):
 	nick,host = hostmask['nick'],hostmask['host']
 	bot.irc_notice(nick,bot.plugin_list().__str__())
 listplugins.command = '$plugins'
-listplugins.admin = True
-	
+
+@require_owner
 def get_setting(bot,hostmask,line):
 	value = bot.settings.get(line[4])
 	bot.irc_notice(hostmask['nick'],'[%s] - [%s]'%(line[4],value))
-
 get_setting.command = '$get'
-get_setting.owner = True
 
+@require_owner
 def set_setting(bot,hostmask,line):
 	setting = line[4].split(' ',1)
 	try: setting[1] = int(setting[1])
@@ -66,4 +68,3 @@ def set_setting(bot,hostmask,line):
 	bot.settings.set(setting[0],setting[1])
 	bot.irc_notice(hostmask['nick'],'Set [%s] to [%s]'%(setting[0],setting[1]))
 set_setting.command = '$set'
-set_setting.owner = True

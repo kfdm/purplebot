@@ -1,21 +1,23 @@
 __purple__ = __name__
 
+from purplebot.decorators import require_owner
+
+@require_owner
 def raw(bot,hostmask,line):
 	bot.irc_raw(line[4]+'\r\n')
 raw.command = '$raw'
-raw.owner = True
 
+@require_owner
 def say(bot,hostmask,line):
 	dest,msg = __dest_msg(hostmask, line)
 	bot.irc_privmsg(dest,msg)
 say.command = '$say'
-say.owner = True
 
+@require_owner
 def me(bot,hostmask,line):
 	dest,msg = __dest_msg(hostmask, line)
 	bot.irc_ctcp_send(dest,'ACTION '+msg)
 me.command = '$me'
-me.owner = True
 
 def __dest_msg(hostmask,line):
 	if line[4][0:1] == '#':

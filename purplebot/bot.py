@@ -64,12 +64,6 @@ class bot(irc):
 				if hasattr(cmd, 'disabled') and cmd.disabled == True:
 					self.__logger.debug('%s has been disabled', cmd.command)
 					return
-				if hasattr(cmd, 'owner'):
-					if host != self.settings.get('Core::Owner', None):
-						raise CommandError('Command requires Owner')
-				if hasattr(cmd, 'admin'):
-					if not self.admin_check({'nick': nick, 'host': host}):
-						raise CommandError('Command requires Admin')
 				if hasattr(cmd, 'thread') and cmd.thread == True:
 					raise CommandError('Does not support threading')
 				else:
@@ -91,21 +85,6 @@ class bot(irc):
 		tmp = hostmask.lstrip(':').split('!')
 		self.__logger.debug("--hostmask--(%s)(%s)(%s)", hostmask, tmp[0], tmp[1])
 		return tmp[0], tmp[1]
-
-	def admin_add(self, str):
-		self.settings.append('Core::Admins', str)
-		self.settings.save()
-
-	def admin_remove(self, str):
-		self.settings.remove('Core::Admins', str)
-
-	def admin_check(self, hostmask):
-		nick, host = hostmask['nick'], hostmask['host']
-		if host == self.settings.get('Core::Owner', None):
-			return True
-		if host in self.settings.get('Core::Admins', []):
-			return True
-		return False
 
 	def alias_add(self, alias, command):
 		def alias_func():
@@ -144,7 +123,7 @@ class bot(irc):
 			self.__logger.exception('Error importing %s', module)
 			return False
 		except AttributeError:
-			self.__logger.warning('Incomptable module %s', module)
+			self.__logger.exception('Incomptable module %s', module)
 			return False
 		except Exception:
 			self.__logger.exception('Unknown Error loading plugin %s', module)

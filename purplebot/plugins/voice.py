@@ -1,5 +1,7 @@
 __purple__ = __name__
 
+from purplebot.decorators import require_admin
+
 def voice(bot,line):
 	nick,host = bot.parse_hostmask(line[0])
 	voicelist = bot.settings.get('VoicePlugin::list',[])
@@ -8,6 +10,7 @@ def voice(bot,line):
 			bot.irc_mode('#japanese','+v %s'%nick)
 voice.event = 'join'
 
+@require_admin
 def addvoice(bot,hostmask,line):
 	voicelist = bot.settings.get('VoicePlugin::list',[])
 	if not line[4] in voicelist:
@@ -15,8 +18,8 @@ def addvoice(bot,hostmask,line):
 		bot.settings.set('VoicePlugin::list',voicelist)
 addvoice.command = '$addvoice'
 addvoice.example = '$addvoice <nick>'
-addvoice.admin = True
 
+@require_admin
 def delvoice(bot,hostmask,line):
 	voicelist = bot.settings.get('VoicePlugin::list',[])
 	if line[4] in voicelist:
@@ -24,4 +27,3 @@ def delvoice(bot,hostmask,line):
 		bot.settings.set('VoicePlugin::list',voicelist)
 delvoice.command = '$delvoice'
 delvoice.example = '$delvoice <nick>'
-delvoice.admin = True

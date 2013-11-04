@@ -1,8 +1,9 @@
 import threading
 import logging
 import time
+from purplebot.errors import *
 
-__all__ = ['threaded', 'ratelimit']
+__all__ = ['threaded', 'ratelimit', 'require_admin', 'require_owner']
 
 logger = logging.getLogger(__name__)
 
@@ -75,3 +76,25 @@ def ratelimit(key, value, alert=True):
 		wrapped.__module__ = func.__module__
 		return wrapped
 	return wrap
+
+
+def require_admin(func):
+	def wrapped(bot, hostmask, line, *args, **kwargs):
+		if hostmask['host'] == bot.settings.get('Core::Owner', None):
+			return func(bot, hostmask, line, *args, **kwargs)
+		if hostmask['host'] in bot.settings.get('Core::Admins', []):
+			return func(bot, hostmask, line, *args, **kwargs)
+		raise CommandError('Command requires Admin')
+	wrapped.__name__ = func.__name__
+	wrapped.__module__ = func.__module__
+	return wrapped
+
+
+def require_owner(func):
+	def wrapped(bot, hostmask, line, *args, **kwargs):
+		if hostmask['host'] == bot.settings.get('Core::Owner', None):
+			return func(bot, hostmask, line, *args, **kwargs)
+		raise CommandError('Command requires Owner')
+	wrapped.__name__ = func.__name__
+	wrapped.__module__ = func.__module__
+	return wrapped
