@@ -12,13 +12,15 @@ from purplebot.util import BlockList, parse_hostmask
 __all__ = ['bot']
 
 
+logger = logging.getLogger(__name__)
+
+
 class bot(irc):
 	settings = Settings()
 
 	"""Mostly simple IRC Bot framework"""
 	def __init__(self, debug=0):
 		irc.__init__(self, debug)
-		self.__logger = logging.getLogger(__name__)
 
 		self.__plugins = {}
 		self.__commands = {}
@@ -35,11 +37,11 @@ class bot(irc):
 		signal.signal(signal.SIGUSR1, self.__reload_plugins)
 
 	def __reload_plugins(self, signum, sigframe):
-		self.__logger.info('Bot recieved signal %s', signum)
-		self.__logger.info('Reloading Plugins')
+		logger.info('Bot recieved signal %s', signum)
+		logger.info('Reloading Plugins')
 		for plugin in self.__plugins:
 			plugin = plugin.replace('_', '.')
-			self.__logger.info('Reloading %s', plugin)
+			logger.info('Reloading %s', plugin)
 			self.plugin_unregister(plugin)
 			self.plugin_register(plugin)
 
@@ -56,21 +58,21 @@ class bot(irc):
 			if line[3] in self.__commands.keys():
 				cmd = self.__commands[line[3]]
 				if hasattr(cmd, 'alias'):
-					self.__logger.info('Alias command %s => %s', line[3], cmd.alias)
+					logger.info('Alias command %s => %s', line[3], cmd.alias)
 					if not cmd.alias in self.__commands.keys():
 						raise CommandError('Invalid Alias')
 					cmd = self.__commands[cmd.alias]
 
 				if hasattr(cmd, 'disabled') and cmd.disabled == True:
-					self.__logger.debug('%s has been disabled', cmd.command)
+					logger.debug('%s has been disabled', cmd.command)
 					return
 				else:
 					cmd(self, {'nick': nick, 'host': host}, line)
 		except CommandError, e:
-			self.__logger.warning('CommandError')
+			logger.warning('CommandError')
 			self.irc_notice(nick, e.__str__())
 		except Exception, e:
-			self.__logger.exception('Error processing commands\n%s', line)
+			logger.exception('Error processing commands\n%s', line)
 			self.irc_notice(nick, 'There was an error processing that command')
 			if self._debugvar >= 2:
 				raise
@@ -98,7 +100,7 @@ class bot(irc):
 		:type module: str
 		"""
 		if module in self.__plugins.keys():
-			self.__logger.warning('Already loaded module %s', module)
+			logger.warning('Already loaded module %s', module)
 			return True
 
 		try:
@@ -107,15 +109,15 @@ class bot(irc):
 			# the entire stack
 			name = module.split('.').pop()
 			mod = __import__(module, fromlist=[name])
-			self.__logger.info('Registering %s', mod.__purple__)
+			logger.info('Registering %s', mod.__purple__)
 		except ImportError:
-			self.__logger.exception('Error importing %s', module)
+			logger.exception('Error importing %s', module)
 			return False
 		except AttributeError:
-			self.__logger.exception('Incomptable module %s', module)
+			logger.exception('Incomptable module %s', module)
 			return False
 		except Exception:
-			self.__logger.exception('Unknown Error loading plugin %s', module)
+			logger.exception('Unknown Error loading plugin %s', module)
 			if self._debugvar >= 2:
 				raise
 			return False
@@ -123,13 +125,13 @@ class bot(irc):
 			self.__plugins[module] = mod
 			for name, obj in vars(mod).iteritems():
 				if name == 'load':
-					self.__logger.info('Running %s plugin load event', module)
+					logger.info('Running %s plugin load event', module)
 					obj(self)
 				if hasattr(obj, 'command'):
-					self.__logger.info('Loading command: %s', obj.command)
+					logger.info('Loading command: %s', obj.command)
 					self.__commands[obj.command] = obj
 				if hasattr(obj, 'event'):
-					self.__logger.info('Loading %s event: %s', obj.event, name)
+					logger.info('Loading %s event: %s', obj.event, name)
 					self.event_register(obj.event, obj)
 
 	def plugin_unregister(self, module):
@@ -144,20 +146,20 @@ class bot(irc):
 		try:
 			mod = self.__plugins[module]
 		except Exception:
-			self.__logger.debug('Error unloading plugin %s', module)
+			logger.debug('Error unloading plugin %s', module)
 			if self._debugvar >= 2:
 				raise
 			return False
 		else:
 			for name, obj in vars(mod).iteritems():
 				if name == 'unload':
-					self.__logger.debug('Running %s plugin unload event', module)
+					logger.debug('Running %s plugin unload event', module)
 					obj(self)
 				if hasattr(obj, 'command'):
-					self.__logger.debug('Unloading command: %s', obj.command)
+					logger.debug('Unloading command: %s', obj.command)
 					self.__commands.pop(obj.command)
 				if hasattr(obj, 'event'):
-					self.__logger.debug('Unloading %s event: %s', obj.event, name)
+					logger.debug('Unloading %s event: %s', obj.event, name)
 					self.event_unregister(obj.event, obj)
 			self.__plugins.pop(module)
 
@@ -185,13 +187,13 @@ class bot(irc):
 
 	def command_enable(self, cmd):
 		if cmd in self.__commands.keys():
-			self.__logger.info('Enable command %s', cmd)
+			logger.info('Enable command %s', cmd)
 			cmd = self.__commands[cmd]
 			cmd.disabled = False
 
 	def command_disable(self, cmd):
 		if cmd in self.__commands.keys():
-			self.__logger.info('Disable command %s', cmd)
+			logger.info('Disable command %s', cmd)
 			cmd = self.__commands[cmd]
 			cmd.disabled = True
 
