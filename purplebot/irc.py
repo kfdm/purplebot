@@ -23,7 +23,7 @@ class irc(object):
 		self._debugvar = debug
 		self._last_msg = time.time()
 
-		self.event = EventDelegate()
+		self.event = EventDelegate(self)
 		self.event.register('timer', self.__irc_timeout)
 
 		signal.signal(signal.SIGINT, self.__sig_term)

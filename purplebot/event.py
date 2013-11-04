@@ -5,8 +5,9 @@ __all__ = ['EventDelegate']
 logger = logging.getLogger(__name__)
 
 class EventDelegate(object):
-	def __init__(self):
+	def __init__(self, bot):
 		self.__events = {}
+		self.bot = bot
 
 	def __call__(self, event_name, *args):
 		'''Run events on named queue
@@ -18,7 +19,7 @@ class EventDelegate(object):
 		if event_name in self.__events:
 			for event in self.__events[event_name]:
 				logger.debug('%s | %s', event_name, args)
-				event(self, *args)
+				event(self.bot, *args)
 		else:
 			logger.warning('No events found for: %s', event_name)
 	def register(self, event_name, function):
