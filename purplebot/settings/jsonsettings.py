@@ -41,6 +41,8 @@ class Settings(object):
 
 	def append(self, key, value):
 		"""Treat the key as a list and append the value"""
+		if key not in self.__settings:
+			self.__settings[key] = []
 		if value in self.__settings[key]:
 			return
 		self.__settings[key].append(value)
