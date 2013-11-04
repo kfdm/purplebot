@@ -4,6 +4,7 @@ except ImportError:
     import unittest
 
 from purplebot.test import testbot
+from purplebot.util import parse_hostmask
 
 
 class TestHostname(unittest.TestCase):
@@ -12,9 +13,9 @@ class TestHostname(unittest.TestCase):
 
     def test_invalid_hostname(self):
         with self.assertRaises(IndexError):
-            self.bot.parse_hostmask('foo')
+            parse_hostmask('foo')
 
     def test_hostname(self):
-        nick, mask = self.bot.parse_hostmask(':KFDM!~paul@purple')
+        nick, mask = parse_hostmask(':KFDM!~paul@purple')
         self.assertEqual(nick, 'KFDM')
         self.assertEqual(mask, '~paul@purple')

@@ -38,3 +38,12 @@ class BlockList(object):
             logger.debug('Compiling %s' % block)
             block = block.replace('*', '.*')
             self.__blocks.append(re.compile(block))
+
+def parse_hostmask(hostmask):
+        """Parse a hostmask into the nick and hostmask parts
+
+        @param hostmask:
+        """
+        tmp = hostmask.lstrip(':').split('!')
+        logger.debug("--hostmask--(%s)(%s)(%s)", hostmask, tmp[0], tmp[1])
+        return tmp[0], tmp[1]

@@ -1,9 +1,10 @@
 __purple__ = __name__
 
+from purplebot.util import parse_hostmask
 from purplebot.decorators import require_admin
 
 def voice(bot,line):
-	nick,host = bot.parse_hostmask(line[0])
+	nick,host = parse_hostmask(line[0])
 	voicelist = bot.settings.get('VoicePlugin::list',[])
 	for voice in voicelist:
 		if host == voice:

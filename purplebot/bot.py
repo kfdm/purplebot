@@ -1,6 +1,5 @@
 """Basic IRC Bot"""
 import string
-import time
 import threading
 import signal
 import logging
@@ -8,7 +7,9 @@ import logging
 from purplebot.irc import irc
 from purplebot.settings.jsonsettings import Settings
 from purplebot.errors import *
-from purplebot.util import BlockList
+from purplebot.util import BlockList, parse_hostmask
+
+__all__ = ['bot']
 
 
 class bot(irc):
@@ -46,7 +47,7 @@ class bot(irc):
 	def __parse_commands(self, bot, line):
 		'[":hostname(sender)","PRIVMSG","reciever(#channel or nick)",":*",*]'
 		try:
-			nick, host = self.parse_hostmask(line[0])
+			nick, host = parse_hostmask(line[0])
 			if(nick == self._nick):
 				return  # Bot doesn't need to parse it's own messages
 			if self.block.check(line[0]):
@@ -67,22 +68,13 @@ class bot(irc):
 				else:
 					cmd(self, {'nick': nick, 'host': host}, line)
 		except CommandError, e:
-			self.__logger.exception('CommandError')
+			self.__logger.warning('CommandError')
 			self.irc_notice(nick, e.__str__())
 		except Exception, e:
 			self.__logger.exception('Error processing commands\n%s', line)
 			self.irc_notice(nick, 'There was an error processing that command')
 			if self._debugvar >= 2:
 				raise
-
-	def parse_hostmask(self, hostmask):
-		"""Parse a hostmask into the nick and hostmask parts
-
-		@param hostmask:
-		"""
-		tmp = hostmask.lstrip(':').split('!')
-		self.__logger.debug("--hostmask--(%s)(%s)(%s)", hostmask, tmp[0], tmp[1])
-		return tmp[0], tmp[1]
 
 	def alias_add(self, alias, command):
 		def alias_func():
