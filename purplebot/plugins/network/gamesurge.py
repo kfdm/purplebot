@@ -1,4 +1,8 @@
+import logging
+
 __purple__ = __name__
+
+logger = logging.getLogger(__name__)
 
 def auth(bot):
 	authserv = bot.settings.get('GamesurgePlugin::authserv')
@@ -8,12 +12,11 @@ def auth(bot):
 		bot.timedelay(10,modes,[bot])
 		bot.timedelay(10,join,[bot])
 	else:
-		bot.debug('Error authing')
+		logger.debug('Error authing')
 auth.event = 'connect'
 
 def join(bot):	
 	channels = bot.settings.get('GamesurgePlugin::channels',[])
-	print channels
 	for channel in channels:
 		bot.irc_join(channel)
 
@@ -22,4 +25,4 @@ def modes(bot):
 	if modes != None:
 		bot.irc_mode(bot._nick,modes)
 	else:
-		bot.debug('Error setting modes')
+		logger.debug('Error setting modes')
