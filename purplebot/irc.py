@@ -108,7 +108,7 @@ class irc(object):
 		'''
 		if event_name in self.__events:
 			for event in self.__events[event_name]:
-				logging.getLogger('events').info('%s|%s', event_name, *args)
+				logging.getLogger('events').debug('%s|%s', event_name, args)
 				event(self, *args)
 
 	def event_register(self, event_name, function):
