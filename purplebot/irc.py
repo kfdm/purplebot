@@ -4,6 +4,9 @@ import ircsocket
 import signal
 import logging
 
+__all__ = ['irc']
+
+logger = logging.getLogger(__name__)
 
 class irc(object):
 	"""Core IRC methods"""
@@ -11,17 +14,10 @@ class irc(object):
 		"""Initialize the bot
 		:param debug: debug level
 		"""
-		self.buffer = ''
-
 		self.running = True
 		self.connected = False
 		self._exit = False
 		self._debugvar = debug
-		self.__logger = logging.getLogger(__name__)
-		self.__log_in = logging.getLogger('irc.in')
-		self.__log_out = logging.getLogger('irc.out')
-		self._channels = []
-		self._readbuffer = ""
 		self._last_msg = time.time()
 
 		self.__events = {}
@@ -31,8 +27,8 @@ class irc(object):
 		signal.signal(signal.SIGTERM, self.__sig_term)
 
 	def __sig_term(self, signum, sigframe):
-		self.__logger.info('Bot recieved signal %s' % signum)
-		self.__logger.info('Exiting')
+		logger.info('Bot recieved signal %s' % signum)
+		logger.info('Exiting')
 		self.running = False
 		if self._socket:
 			self._socket.close()
@@ -69,7 +65,6 @@ class irc(object):
 
 	def _parse_line(self, line):
 		"""Parse an incoming message from the irc server"""
-		self.__log_in.debug(line)
 		message = string.rstrip(line).split(' ', 4)
 		try:
 			if message[1] in self._parse_events:
@@ -84,17 +79,14 @@ class irc(object):
 						self.event('CONNECT')
 				elif(message[0] == "ERROR"):
 					message = ' '.join(message)
-					self.__logger.error("---Error--- " + message)
+					logger.error("---Error--- " + message)
 					self._socket.close()
 					self.running = False
 				else:
 					message = ' '.join(message)
-					self.__logger.warning("--Unknown message-- " + message)
+					logger.warning("--Unknown message-- " + message)
 		except Exception:
-			self.__logger.warning('Error parsing line: %s' % line)
-			if self._debugvar >= 2:
-				self.running = False
-				raise
+			logger.exception('Error parsing line: %s' % line)
 
 	###########################################################################
 	# Event Functions
@@ -108,8 +100,10 @@ class irc(object):
 		'''
 		if event_name in self.__events:
 			for event in self.__events[event_name]:
-				logging.getLogger('events').debug('%s|%s', event_name, args)
+				logger.debug('Processing Event: %s | %s', event_name, args)
 				event(self, *args)
+		else:
+			logger.warning('No events found for: %s', event_name)
 
 	def event_register(self, event_name, function):
 		"""Register a new event
@@ -148,7 +142,6 @@ class irc(object):
 	def irc_raw(self, message):
 		"""Send a raw IRC message as is"""
 		self._socket.write(message.encode('utf-8'))
-		self.__log_out.debug(message.encode('utf-8').strip())
 
 	def irc_nick(self, nick):
 		"""Change nick"""

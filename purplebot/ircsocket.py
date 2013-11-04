@@ -2,7 +2,12 @@ import socket
 import Queue
 import threading
 import select
+import logging
 
+__all__ = ['ircsocket']
+
+log_in = logging.getLogger('irc.in')
+log_out = logging.getLogger('irc.out')
 
 class ircsocket(threading.Thread):
 	def connect(self, host, port=6667):
@@ -34,9 +39,11 @@ class ircsocket(threading.Thread):
 				tmp = rbuffer.split('\r\n')
 				rbuffer = tmp.pop()
 				for line in tmp:
+					log_in.info(line)
 					self._rbuffer.put(line)
 			for s in wlist:
 				if not self._wbuffer.empty():
 					message = self._wbuffer.get()
+					log_out.info(message.strip())
 					s.send(message)
 		self._socket.close()
