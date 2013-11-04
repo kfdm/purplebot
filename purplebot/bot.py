@@ -64,8 +64,6 @@ class bot(irc):
 				if hasattr(cmd, 'disabled') and cmd.disabled == True:
 					self.__logger.debug('%s has been disabled', cmd.command)
 					return
-				if hasattr(cmd, 'thread') and cmd.thread == True:
-					raise CommandError('Does not support threading')
 				else:
 					cmd(self, {'nick': nick, 'host': host}, line)
 		except CommandError, e:
