@@ -63,7 +63,7 @@ def set_setting(bot,hostmask,line):
 	setting = line[4].split(' ',1)
 	try: setting[1] = int(setting[1])
 	except: pass
-	bot.setting_set(setting[0],setting[1])
+	bot.settings.set(setting[0],setting[1])
 	bot.irc_notice(hostmask['nick'],'Set [%s] to [%s]'%(setting[0],setting[1]))
 set_setting.command = '$set'
 set_setting.owner = True
