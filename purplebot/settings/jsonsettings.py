@@ -15,9 +15,12 @@ restricted = ['Core::Admins', 'Core::Blocks', 'Core::Owner']
 
 
 class Settings(object):
-	def __init__(self):
+	def __init__(self, path=None):
 		self.__settings = {}
-		self.file = os.path.abspath('settings.json')
+		if path:
+			self.file = path
+		else:
+			self.file = os.path.abspath('settings.json')
 
 	def __getitem__(self, key):
 		return self.__settings[key]

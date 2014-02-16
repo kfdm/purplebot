@@ -16,10 +16,8 @@ logger = logging.getLogger(__name__)
 
 
 class bot(irc):
-	settings = Settings()
-
 	"""Mostly simple IRC Bot framework"""
-	def __init__(self, debug=0):
+	def __init__(self, debug=0, settings_path=None):
 		irc.__init__(self, debug)
 
 		self.__plugins = {}
@@ -31,6 +29,7 @@ class bot(irc):
 		#Register some internal commands
 		self.plugin_register('purplebot.plugins.core')
 
+		self.settings = Settings(settings_path)
 		self.settings.load()
 		self.block = BlockList(self.settings)
 
