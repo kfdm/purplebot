@@ -33,7 +33,7 @@ class testbot(bot):
 	def irc_raw(self, message):
 		print message.strip()
 
-	def run(self):
+	def run(self, host, port, nick, ident, realname):
 		pass
 
 	def dump_events(self):
