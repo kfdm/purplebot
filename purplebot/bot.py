@@ -68,10 +68,10 @@ class bot(irc):
 				else:
 					cmd(self, {'nick': nick, 'host': host}, line)
 		except CommandError, e:
-			logger.warning('CommandError')
+			logger.warning('CommandError', exc_info=True)
 			self.irc_notice(nick, e.__str__())
 		except Exception, e:
-			logger.exception('Error processing commands\n%s', line)
+			logger.exception('Error processing commands\n%s', line, exc_info=True)
 			self.irc_notice(nick, 'There was an error processing that command')
 			if self._debugvar >= 2:
 				raise

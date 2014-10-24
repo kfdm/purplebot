@@ -21,7 +21,7 @@ class EventDelegate(object):
 				logger.debug('%s | %s', event_name, args)
 				event(self.bot, *args)
 		else:
-			logger.warning('No events found for: %s', event_name)
+			logger.warning('No events found for: %s', event_name, exc_info=True)
 	def register(self, event_name, function):
 		"""Register a new event
 		:param event_name: Examples PRIVMSG, CONNECT, JOIN
