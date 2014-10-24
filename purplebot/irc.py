@@ -82,12 +82,12 @@ class irc(object):
 						self.event('CONNECT')
 				elif(message[0] == "ERROR"):
 					message = ' '.join(message)
-					logger.error("---Error--- " + message)
+					logger.error("---Error--- %s", message)
 					self._socket.close()
 					self.running = False
 				else:
 					message = ' '.join(message)
-					logger.warning("--Unknown message-- " + message)
+					logger.warning("--Unknown message-- %s", message)
 		except Exception:
 			logger.exception('Error parsing line: %s' % line)
 
