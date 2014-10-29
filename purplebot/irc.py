@@ -25,6 +25,8 @@ class irc(object):
 
 		self.event = EventDelegate(self)
 		self.event.register('timer', self.__irc_timeout)
+		self.event.register('PING', self.__irc_ping)
+		self.event.register('ERROR', self.__irc_error)
 
 		signal.signal(signal.SIGINT, self.__sig_term)
 		signal.signal(signal.SIGTERM, self.__sig_term)
@@ -64,36 +66,37 @@ class irc(object):
 		'PONG',
 		'MODE',
 		'NICK',
+		'QUIT',
 	]
 
 	def _parse_line(self, line):
 		"""Parse an incoming message from the irc server"""
-		message = string.rstrip(line).split(' ', 4)
+		parts = string.rstrip(line).split(' ', 4)
 		try:
-			if message[1] in self._parse_events:
-				self.event(message[1], message)
-			elif(message[1] == "PONG"):
-				self.irc_ping(message[2])
+			if parts[1] in self._parse_events:
+				self.event(parts[1], parts)
+			elif parts[0] in ("PING", "ERROR"):
+				self.event(parts[0], parts)
 			else:
-				if(message[0] == "PING"):
-					self.irc_pong(message[1])
-					if not self.connected:
-						self.connected = True
-						self.event('CONNECT')
-				elif(message[0] == "ERROR"):
-					message = ' '.join(message)
-					logger.error("---Error--- %s", message)
-					self._socket.close()
-					self.running = False
-				else:
-					message = ' '.join(message)
-					logger.warning("--Unknown message-- %s", message)
+				logger.warning("--Unknown message-- %s", line)
 		except Exception:
-			logger.exception('Error parsing line: %s' % line)
+			logger.exception('Error parsing line: %s', line)
 
 	def __irc_timeout(self, bot, time):
 		if time - self._last_msg > self.__TIMEOUT:
 			self.disconnect('Irc timed out')
+
+	def __irc_ping(self, bot, message):
+		self.irc_pong(message[1])
+		if not self.connected:
+			self.connected = True
+			self.event('CONNECT')
+
+	def __irc_error(self, bot, message):
+		message = ' '.join(message)
+		logger.error("---Error--- %s", ' '.join(message))
+		self._socket.close()
+		self.running = False
 
 	###########################################################################
 	# IRC Functions
