@@ -1,4 +1,5 @@
 import logging
+import collections
 
 __all__ = ['EventDelegate']
 
@@ -7,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 class EventDelegate(object):
 	def __init__(self, bot):
-		self.__events = {}
+		self.__events = collections.defaultdict(list)
 		self.bot = bot
 
 	def __call__(self, event_name, *args):
@@ -33,8 +34,6 @@ class EventDelegate(object):
 		"""
 		event_name = event_name.upper()
 		logger.debug('Registering %s as %s', function, event_name)
-		if event_name not in self.__events:
-			self.__events[event_name] = []
 		self.__events[event_name].append(function)
 
 	def unregister(self, event_name, function):
@@ -49,5 +48,3 @@ class EventDelegate(object):
 		logger.debug('Unregistering %s from %s', function, event_name)
 		if event_name in self.__events:
 			self.__events[event_name].remove(function)
-			if len(self.__events[event_name]) == 0:
-				self.__events.pop(event_name)
