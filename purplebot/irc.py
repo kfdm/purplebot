@@ -77,8 +77,10 @@ class irc(object):
 				self.event(parts[1], parts)
 			elif parts[0] in ("PING", "ERROR"):
 				self.event(parts[0], parts)
+			elif parts[1].isdigit():
+				logger.debug('Server message: %s', line)
 			else:
-				logger.warning("--Unknown message-- %s", line)
+				logger.warning("Unknown message: %s", line)
 		except Exception:
 			logger.exception('Error parsing line: %s', line)
 
