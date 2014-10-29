@@ -4,6 +4,7 @@ __all__ = ['EventDelegate']
 
 logger = logging.getLogger(__name__)
 
+
 class EventDelegate(object):
 	def __init__(self, bot):
 		self.__events = {}
@@ -21,7 +22,8 @@ class EventDelegate(object):
 				logger.debug('%s | %s', event_name, args)
 				event(self.bot, *args)
 		else:
-			logger.warning('No events found for: %s', event_name, exc_info=True)
+			logger.warning('No events found for: %s', event_name, extra={'data': {'event': event_name}})
+
 	def register(self, event_name, function):
 		"""Register a new event
 		:param event_name: Examples PRIVMSG, CONNECT, JOIN
@@ -30,7 +32,8 @@ class EventDelegate(object):
 		:type function: func
 		"""
 		event_name = event_name.upper()
-		if not event_name in self.__events:
+		logger.debug('Registering %s as %s', function, event_name)
+		if event_name not in self.__events:
 			self.__events[event_name] = []
 		self.__events[event_name].append(function)
 
@@ -43,6 +46,7 @@ class EventDelegate(object):
 		:type function: func
 		"""
 		event_name = event_name.upper()
+		logger.debug('Unregistering %s from %s', function, event_name)
 		if event_name in self.__events:
 			self.__events[event_name].remove(function)
 			if len(self.__events[event_name]) == 0:
