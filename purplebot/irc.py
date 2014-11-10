@@ -59,6 +59,7 @@ class irc(object):
 	# Parsing Functions
 	###########################################################################
 	_parse_events = (
+		'AUTH',
 		'JOIN',
 		'MODE',
 		'NICK',
