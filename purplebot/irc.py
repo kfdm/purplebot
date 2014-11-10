@@ -23,7 +23,7 @@ class irc(object):
 		self._debugvar = debug
 		self._last_msg = time.time()
 
-		self.event = EventDelegate(self)
+		self.event = EventDelegate()
 		self.event.register('timer', self.__irc_timeout)
 		self.event.register('PING', self.__irc_ping)
 		self.event.register('ERROR', self.__irc_error)
@@ -75,9 +75,9 @@ class irc(object):
 		parts = string.rstrip(line).split(' ', 4)
 		try:
 			if parts[1] in self._parse_events:
-				self.event(parts[1], parts)
+				self.event(parts[1], self, parts)
 			elif parts[0] in ("PING", "ERROR"):
-				self.event(parts[0], parts)
+				self.event(parts[0], self, parts)
 			elif parts[1].isdigit():
 				logger.debug('Server message: %s', line)
 			else:
@@ -93,7 +93,7 @@ class irc(object):
 		self.irc_pong(message[1])
 		if not self.connected:
 			self.connected = True
-			self.event('CONNECT')
+			self.event('CONNECT', self)
 
 	def __irc_error(self, bot, message):
 		message = ' '.join(message)

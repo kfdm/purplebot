@@ -7,21 +7,20 @@ logger = logging.getLogger(__name__)
 
 
 class EventDelegate(object):
-	def __init__(self, bot):
-		self.__events = collections.defaultdict(list)
-		self.bot = bot
+	def __init__(self):
+		self.events = collections.defaultdict(list)
 
-	def __call__(self, event_name, *args):
+	def __call__(self, event_name, *args, **kwargs):
 		'''Run events on named queue
 		:param event_name: Examples PRIVMSG, CONNECT, JOIN
 		:type event_name: str
 		:param param: Parameters to send to the registered functions. Varies from
 		event to event
 		'''
-		if event_name in self.__events:
-			for event in self.__events[event_name]:
-				logger.debug('%s | %s', event_name, args)
-				event(self.bot, *args)
+		if event_name in self.events:
+			for event in self.events[event_name]:
+				logger.debug('%s | %s | %s', event_name, args, kwargs)
+				event(*args, **kwargs)
 		else:
 			logger.debug('No events found for: %s', event_name)
 
@@ -34,7 +33,7 @@ class EventDelegate(object):
 		"""
 		event_name = event_name.upper()
 		logger.debug('Registering %s as %s', function, event_name)
-		self.__events[event_name].append(function)
+		self.events[event_name].append(function)
 
 	def unregister(self, event_name, function):
 		"""Unregister an event
@@ -46,5 +45,5 @@ class EventDelegate(object):
 		"""
 		event_name = event_name.upper()
 		logger.debug('Unregistering %s from %s', function, event_name)
-		if event_name in self.__events:
-			self.__events[event_name].remove(function)
+		if event_name in self.events:
+			self.events[event_name].remove(function)
