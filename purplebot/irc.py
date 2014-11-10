@@ -58,16 +58,17 @@ class irc(object):
 	###########################################################################
 	# Parsing Functions
 	###########################################################################
-	_parse_events = [
-		'PRIVMSG',
-		'NOTICE',
+	_parse_events = (
 		'JOIN',
-		'PART',
-		'PONG',
 		'MODE',
 		'NICK',
+		'NOTICE',
+		'PART',
+		'PONG',
+		'PRIVMSG',
 		'QUIT',
-	]
+		'TOPIC',
+	)
 
 	def _parse_line(self, line):
 		"""Parse an incoming message from the irc server"""
