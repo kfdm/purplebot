@@ -1,10 +1,10 @@
+import logging
+import signal
 import string
 import time
-import ircsocket
-import signal
-import logging
 
 from purplebot.event import EventDelegate
+from purplebot.ircsocket import ircsocket
 
 __all__ = ['irc']
 
@@ -45,7 +45,7 @@ class irc(object):
 		self._ident = ident
 		self._realname = realname
 
-		self._socket = ircsocket.ircsocket()
+		self._socket = ircsocket()
 		self._socket.connect(host, port)
 		self.irc_nick(self._nick)
 		self.irc_user(self._ident, self._host, self._realname)

@@ -1,7 +1,8 @@
-import threading
 import logging
+import threading
 import time
-from purplebot.errors import *
+
+from purplebot.errors import CommandError
 
 __all__ = ['threaded', 'ratelimit', 'require_admin', 'require_owner']
 

@@ -1,13 +1,14 @@
-import socket
-import Queue
-import threading
-import select
 import logging
+import Queue
+import select
+import socket
+import threading
 
 __all__ = ['ircsocket']
 
 log_in = logging.getLogger('irc.in')
 log_out = logging.getLogger('irc.out')
+
 
 class ircsocket(threading.Thread):
 	def connect(self, host, port=6667):

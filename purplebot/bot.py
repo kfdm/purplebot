@@ -1,12 +1,12 @@
 """Basic IRC Bot"""
+import logging
+import signal
 import string
 import threading
-import signal
-import logging
 
+from purplebot.errors import CommandError, BotError
 from purplebot.irc import irc
 from purplebot.settings.jsonsettings import Settings
-from purplebot.errors import *
 from purplebot.util import BlockList, parse_hostmask
 
 __all__ = ['bot']
@@ -23,10 +23,10 @@ class bot(irc):
 		self.__plugins = {}
 		self.__commands = {}
 
-		#Register command handler on privmsg event queue
+		# Register command handler on privmsg event queue
 		self.event.register('PRIVMSG', self.__parse_commands)
 
-		#Register some internal commands
+		# Register some internal commands
 		self.plugin_register('purplebot.plugins.core')
 
 		self.settings = Settings(settings_path)
@@ -58,11 +58,11 @@ class bot(irc):
 				cmd = self.__commands[line[3]]
 				if hasattr(cmd, 'alias'):
 					logger.info('Alias command %s => %s', line[3], cmd.alias)
-					if not cmd.alias in self.__commands.keys():
+					if cmd.alias not in self.__commands.keys():
 						raise CommandError('Invalid Alias')
 					cmd = self.__commands[cmd.alias]
 
-				if hasattr(cmd, 'disabled') and cmd.disabled == True:
+				if hasattr(cmd, 'disabled') and cmd.disabled is True:
 					logger.debug('%s has been disabled', cmd.command)
 					return
 				else:
@@ -85,7 +85,7 @@ class bot(irc):
 		self.__commands[alias] = alias_func
 
 	def alias_remove(self, alias):
-		if not alias in self.__commands.keys():
+		if alias not in self.__commands.keys():
 			raise BotError('Invalid alias name')
 		cmd = self.__commands[alias]
 		if not hasattr(cmd, 'alias'):
@@ -140,7 +140,7 @@ class bot(irc):
 		:type module: str
 		"""
 		module = module.replace('.', '_')
-		if not module in self.__plugins.keys():
+		if module not in self.__plugins.keys():
 			return False
 		try:
 			mod = self.__plugins[module]

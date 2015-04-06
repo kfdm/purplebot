@@ -26,9 +26,9 @@ class BlockList(object):
 
     def check(self, str):
         for block in self.__blocks:
-            #logger.debug('Checking: %s'%block)
+            # logger.debug('Checking: %s'%block)
             if block.search(str):
-                #logger.debug('Blocking: %s'%block)
+                # logger.debug('Blocking: %s'%block)
                 return True
         return False
 
@@ -38,6 +38,7 @@ class BlockList(object):
             logger.debug('Compiling %s' % block)
             block = block.replace('*', '.*')
             self.__blocks.append(re.compile(block))
+
 
 def parse_hostmask(hostmask):
         """Parse a hostmask into the nick and hostmask parts

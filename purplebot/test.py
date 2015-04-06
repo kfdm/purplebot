@@ -11,7 +11,7 @@ colors = {
 }
 
 for k in colors:
-	logging.addLevelName( k, colors[k] % logging.getLevelName(k))
+	logging.addLevelName(k, colors[k] % logging.getLevelName(k))
 
 
 class testbot(bot):
@@ -51,7 +51,7 @@ class testbot(bot):
 
 
 def main():
-	logging.basicConfig(level=logging.DEBUG,format=LOG_FORMAT)
+	logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
 
 	test = testbot(debug=1)
 	test.connect('localhost', 6667, 'testbot', 'testbot', 'testbot')
