@@ -4,6 +4,7 @@ import signal
 import string
 import threading
 
+from purplebot.decorators import ignore_self
 from purplebot.errors import CommandError, BotError
 from purplebot.irc import irc
 from purplebot.settings.jsonsettings import Settings
@@ -44,12 +45,11 @@ class bot(irc):
 			self.plugin_unregister(plugin)
 			self.plugin_register(plugin)
 
+	@ignore_self
 	def __parse_commands(self, bot, line):
-		'[":hostname(sender)","PRIVMSG","reciever(#channel or nick)",":*",*]'
+		# '[":hostname(sender)","PRIVMSG","reciever(#channel or nick)",":*",*]'
 		try:
 			nick, host = parse_hostmask(line[0])
-			if(nick == self._nick):
-				return  # Bot doesn't need to parse it's own messages
 			if self.block.check(line[0]):
 				return  # Ignore messages from blocked users
 			line[3] = string.lstrip(line[3], ':')

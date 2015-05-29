@@ -3,6 +3,7 @@ import threading
 import time
 
 from purplebot.errors import CommandError
+from purplebot.util import parse_hostmask
 
 __all__ = ['threaded', 'ratelimit', 'require_admin', 'require_owner']
 
@@ -98,4 +99,17 @@ def require_owner(func):
 		raise CommandError('Command requires Owner')
 	wrapped.__name__ = func.__name__
 	wrapped.__module__ = func.__module__
+	return wrapped
+
+
+def ignore_self(func):
+	def wrapped(self, bot, line):
+		nick, host = parse_hostmask(line[0])
+		if(nick == bot._nick):
+			logger.debug('Ignoring self')
+			return  # Bot doesn't need to parse it's own messages
+		return func(self, bot, line)
+	wrapped.__name__ = func.__name__
+	wrapped.__module__ = func.__module__
+	wrapped.__doc__ == func.__doc__
 	return wrapped
