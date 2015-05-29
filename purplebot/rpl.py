@@ -20,6 +20,15 @@ class RPL(cmd.Cmd):
         """Exit RPL"""
         return True
 
+    def do_load(self, plugin):
+        self.bot.plugin_register(plugin)
+
+    def do_unload(self, plugin):
+        self.bot.plugin_unregister(plugin)
+
+    def do_list(self, *args):
+        print self.bot.plugin_list()
+
     def do_shell(self, line):
         """Jump into a Python Shell"""
         env = {'bot': self.bot, 'pprint': pprint}
