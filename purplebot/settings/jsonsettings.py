@@ -8,10 +8,12 @@ try:
 except ImportError:
 	import simplejson as json
 
-#import purplebot.bot
 from purplebot.errors import BotError
 
 restricted = ['Core::Admins', 'Core::Blocks', 'Core::Owner']
+
+DEFAULT_PATH = os.path.join(
+	os.path.expanduser('~'), '.purplebot', 'settings.json')
 
 
 class Settings(object):
@@ -20,7 +22,7 @@ class Settings(object):
 		if path:
 			self.file = path
 		else:
-			self.file = os.path.abspath('settings.json')
+			self.file = DEFAULT_PATH
 
 	def __getitem__(self, key):
 		return self.__settings[key]
