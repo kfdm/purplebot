@@ -40,11 +40,28 @@ def ratelimit_expired(key, duration=None):
 
 def threaded(func):
 	'''Run a bot sub command in a thread'''
+
+	# Copy of threading.Thread.run so that we can log exceptions
+	class Thread(threading.Thread):
+		def run(self):
+			try:
+				if self.__target:
+					self.__target(*self.__args, **self.__kwargs)
+			except:
+				logger.exception(
+					'Uncaught Exception %s.%s',
+					func.__module__,
+					func.__name__
+				)
+			finally:
+				del self.__target, self.__args, self.__kwargs
+
 	def wrapped(*args, **kwargs):
 		logger.debug('Running in a thread: %s.%s', func.__module__, func.__name__)
-		threading.Thread(target=func, args=args, kwargs=kwargs).start()
+		Thread(target=func, args=args, kwargs=kwargs).start()
 	wrapped.__name__ = func.__name__
 	wrapped.__module__ = func.__module__
+	wrapped.__doc__ = func.__doc__
 	return wrapped
 
 
