@@ -1,7 +1,6 @@
 import logging
 import sys
 from purplebot.bot import bot
-from purplebot.cli.console import LOG_FORMAT
 
 colors = {
 	logging.WARNING: "\033[1;31m%s\033[1;m",
@@ -51,7 +50,7 @@ class testbot(bot):
 
 
 def main():
-	logging.basicConfig(level=logging.DEBUG, format=LOG_FORMAT)
+	logging.basicConfig(level=logging.DEBUG)
 
 	test = testbot(debug=1)
 	test.connect('localhost', 6667, 'testbot', 'testbot', 'testbot')

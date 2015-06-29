@@ -19,7 +19,9 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-                'purplebot = purplebot.cli.console:main'
+            'purplebot = purplebot.cli.console:main',
+            'purplebot-rpl = purplebot.cli.rpl:main',
+            'purplebot-rpl = purplebot.test:main',
         ]
     }
 )
