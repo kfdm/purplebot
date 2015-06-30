@@ -19,7 +19,11 @@ def get_quote(bot, hostmask, line):
             bot.settings.get('QuotePlugin::submit', URL_SUBMIT),
             params={'search': line[4]}
         )
-        quote = random.choice(response.json())
+        try:
+            quote = random.choice(response.json())
+        except IndexError:
+            bot.irc_privmsg(hostmask['nick'], 'No quote found for %s' % line[4])
+            return
     else:
         response = requests.get(bot.settings.get('QuotePlugin::submit', URL_RANDOM))
         quote = response.json()
@@ -27,7 +31,7 @@ def get_quote(bot, hostmask, line):
     try:
         bot.irc_privmsg(dest, '{created} {body}'.format(**quote))
     except KeyError:
-        bot.irc_privmsg(dest, 'Error reading quote')
+        bot.irc_privmsg(hostmask['nick'], 'Error reading quote')
 get_quote.command = '.quote'
 get_quote.example = '.quote [#]'
 
