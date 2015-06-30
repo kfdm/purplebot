@@ -25,7 +25,7 @@ def get_quote(bot, hostmask, line):
             bot.irc_privmsg(hostmask['nick'], 'No quote found for %s' % line[4])
             return
     else:
-        response = requests.get(bot.settings.get('QuotePlugin::submit', URL_RANDOM))
+        response = requests.get(bot.settings.get('QuotePlugin::random', URL_RANDOM))
         quote = response.json()
 
     try:
