@@ -21,7 +21,7 @@ setup(
         'console_scripts': [
             'purplebot = purplebot.cli.console:main',
             'purplebot-rpl = purplebot.cli.rpl:main',
-            'purplebot-rpl = purplebot.test:main',
+            'purplebot-test = purplebot.test:main',
         ]
     }
 )
