@@ -88,7 +88,7 @@ class irc(object):
 				if self._parts[2][0:1] == '#':
 					return self._parts[2]
 				else:
-					return parse_hostmask(self._line[0])['nick']
+					return parse_hostmask(self._parts[0])['nick']
 
 			def hostmask(self):
 				# This should only be run for PRIVMSG/NOTICE but for now
