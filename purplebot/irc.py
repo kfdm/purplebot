@@ -77,7 +77,8 @@ class irc(object):
 			def __init__(self, line):
 				self._raw = line
 				self._parts = string.rstrip(line).split(' ', 4)
-				_, self._command, self._text = string.rstrip(line).split(':', 2)
+				if self._parts[1] in ['PRIVMSG', 'NOTICE']:
+					_, self._command, self._text = string.rstrip(line).split(':', 2)
 
 			def __getitem__(self, key):
 				return self._parts[key]
