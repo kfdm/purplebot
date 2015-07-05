@@ -5,6 +5,7 @@ import time
 
 from purplebot.event import EventDelegate
 from purplebot.ircsocket import ircsocket
+from purplebot.util import parse_hostmask
 
 __all__ = ['irc']
 
@@ -72,8 +73,29 @@ class irc(object):
 	)
 
 	def _parse_line(self, line):
+		class Line(object):
+			def __init__(self, line):
+				self._raw = line
+				self._parts = string.rstrip(line).split(' ', 4)
+				_, self._command, self._text = string.rstrip(line).split(':', 2)
+
+			def __getitem__(self, key):
+				return self._parts[key]
+
+			@property
+			def dest(self):
+				if self._parts[2][0:1] == '#':
+					return self._parts[2]
+				else:
+					return parse_hostmask(self._line[0])['nick']
+
+			def hostmask(self):
+				# This should only be run for PRIVMSG/NOTICE but for now
+				# I'll leave it without extra checks
+				return parse_hostmask(self._line[0])
+
 		"""Parse an incoming message from the irc server"""
-		parts = string.rstrip(line).split(' ', 4)
+		parts = Line(line)
 		try:
 			if parts[1] in self._parse_events:
 				self.event(parts[1], self, parts)

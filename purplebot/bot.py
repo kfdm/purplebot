@@ -52,12 +52,12 @@ class bot(irc):
 			nick, host = parse_hostmask(line[0])
 			if self.block.check(line[0]):
 				return  # Ignore messages from blocked users
-			line[3] = string.lstrip(line[3], ':')
+			commandstr = string.lstrip(line[3], ':')
 
-			if line[3] in self.__commands.keys():
-				cmd = self.__commands[line[3]]
+			if commandstr in self.__commands.keys():
+				cmd = self.__commands[commandstr]
 				if hasattr(cmd, 'alias'):
-					logger.info('Alias command %s => %s', line[3], cmd.alias)
+					logger.info('Alias command %s => %s', commandstr, cmd.alias)
 					if cmd.alias not in self.__commands.keys():
 						raise CommandError('Invalid Alias')
 					cmd = self.__commands[cmd.alias]
