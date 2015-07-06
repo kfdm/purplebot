@@ -83,6 +83,10 @@ class irc(object):
 			def __getitem__(self, key):
 				return self._parts[key]
 
+			def __len__(self):
+				# Shim for len(line)
+				return len(self._parts)
+
 			@property
 			def dest(self):
 				if self._parts[2][0:1] == '#':
