@@ -22,7 +22,7 @@ def get_quote(bot, hostmask, line):
         try:
             quote = random.choice(response.json())
         except IndexError:
-            bot.irc_privmsg(hostmask['nick'], 'No quote found for %s' % line[4])
+            bot.irc_notice(hostmask['nick'], 'No quote found for %s' % line[4])
             return
     else:
         response = requests.get(bot.settings.get('QuotePlugin::random', URL_RANDOM))
@@ -31,7 +31,7 @@ def get_quote(bot, hostmask, line):
     try:
         bot.irc_privmsg(dest, u'{created} {body}'.format(**quote))
     except KeyError:
-        bot.irc_privmsg(hostmask['nick'], 'Error reading quote')
+        bot.irc_notice(hostmask['nick'], 'Error reading quote')
 get_quote.command = '.quote'
 get_quote.example = '.quote [#]'
 
@@ -46,7 +46,7 @@ def add_quote(bot, hostmask, line):
         )
         response.raise_for_status()
     except:
-        bot.irc_privmsg(hostmask['nick'], 'Error adding quote')
+        bot.irc_notice(hostmask['nick'], 'Error adding quote')
     else:
-        bot.irc_privmsg(hostmask['nick'], 'Quote Added')
+        bot.irc_notice(hostmask['nick'], 'Quote Added')
 add_quote.command = '.addquote'
