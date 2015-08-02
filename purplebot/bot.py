@@ -38,6 +38,9 @@ class bot(irc):
 
 	def __reload_plugins(self, signum, sigframe):
 		logger.info('Bot recieved signal %s', signum)
+		logger.info('Reloading Settings')
+		self.settings.load()
+		self.block = BlockList(self.settings)
 		logger.info('Reloading Plugins')
 		for plugin in self.__plugins:
 			plugin = plugin.replace('_', '.')
