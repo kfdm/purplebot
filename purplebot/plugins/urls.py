@@ -21,16 +21,21 @@ def check_urls(bot, line):
         url = match.group()
         session = requests.Session()
         logger.debug('Found URL: %s', url)
-        head = session.head(url)
+        head = session.head(url, allow_redirects=True)
 
         if 'text/html' not in head.headers.get('content-type'):
             logger.debug('URL is not html')
             continue
 
-        result = session.get(url)
+        # Get the actual page with the now possibly redirected URL
+        result = session.get(head.url)
         if '<title>' not in result.text:
             logger.debug('Unable to find title')
             continue
+
+        # If there is no encoding set, then lets force it to decode as utf8
+        if result.encoding is None or result.encoding == 'ISO-8859-1':
+            result.encoding = 'utf-8'
 
         soup = bs4.BeautifulSoup(result.text, "lxml")
         bot.irc_privmsg(line.dest, 'LC: ' + WHITESPACE.sub(' ', soup.title.string))
