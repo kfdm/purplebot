@@ -20,7 +20,7 @@ def get_quote(bot, hostmask, line):
             params={'search': line[4]}
         )
         try:
-            quote = random.choice(response.json())
+            quote = random.choice(response.json().get('results'))
         except IndexError:
             bot.irc_notice(hostmask['nick'], 'No quote found for %s' % line[4])
             return
