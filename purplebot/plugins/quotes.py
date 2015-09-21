@@ -3,6 +3,7 @@ __purple__ = __name__
 import requests
 import random
 
+from purplebot import USER_AGENT
 from purplebot.decorators import threaded, ratelimit
 
 URL_SUBMIT = 'http://localhost:8000/quotes/'
@@ -17,7 +18,8 @@ def get_quote(bot, hostmask, line):
     if len(line) == 5:
         response = requests.get(
             bot.settings.get('QuotePlugin::submit', URL_SUBMIT),
-            params={'search': line[4]}
+            params={'search': line[4]},
+            headers={'user-agent': USER_AGENT}
         )
         try:
             quote = random.choice(response.json().get('results'))
@@ -25,7 +27,10 @@ def get_quote(bot, hostmask, line):
             bot.irc_notice(hostmask['nick'], 'No quote found for %s' % line[4])
             return
     else:
-        response = requests.get(bot.settings.get('QuotePlugin::random', URL_RANDOM))
+        response = requests.get(
+            bot.settings.get('QuotePlugin::random', URL_RANDOM),
+            headers={'user-agent': USER_AGENT}
+        )
         quote = response.json()
 
     try:
@@ -42,7 +47,8 @@ def add_quote(bot, hostmask, line):
         response = requests.post(
             bot.settings.get('QuotePlugin::submit', URL_SUBMIT),
             data={'body': line[4]},
-            auth=(bot.settings.get('Misc::rpcuser'), bot.settings.get('Misc::rpcpass'))
+            auth=(bot.settings.get('Misc::rpcuser'), bot.settings.get('Misc::rpcpass')),
+            headers={'user-agent': USER_AGENT}
         )
         response.raise_for_status()
     except:
