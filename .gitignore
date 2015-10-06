@@ -13,5 +13,7 @@ dist/*
 cover/*
 *.egg-info*
 
+# Python
 __pycache__
 *.pyc
+.tox
