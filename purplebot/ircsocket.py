@@ -32,19 +32,26 @@ class ircsocket(threading.Thread):
 		self._running = False
 
 	def run(self):
-		rbuffer = ""
+		'''
+		Main loop for the irc connection
+
+		Ideally this is the only place in the bot that would need to worry about
+		unicode vs byte strings. Everything else should be using unicode strings
+		'''
+		rbuffer = b""
 		while self._running:
 			rlist, wlist, xlist = select.select([self._socket], [self._socket], [], 1)
 			for s in rlist:
 				rbuffer += s.recv(1024)
-				tmp = rbuffer.split('\r\n')
+				tmp = rbuffer.split(b'\r\n')
 				rbuffer = tmp.pop()
 				for line in tmp:
-					log_in.info(line)
-					self._rbuffer.put(line)
+					decoded = line.decode('utf8')
+					log_in.info(decoded)
+					self._rbuffer.put(decoded)
 			for s in wlist:
 				if not self._wbuffer.empty():
 					message = self._wbuffer.get()
 					log_out.info(message.strip())
-					s.send(message)
+					s.send(message.encode('utf8'))
 		self._socket.close()

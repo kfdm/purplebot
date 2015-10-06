@@ -59,26 +59,20 @@ class Settings(object):
 			self.save()
 
 	def save(self):
-		try:
-			output = open(self.file, 'wb')
-			output.write(json.dumps(self.__settings, sort_keys=True, indent=4))
-			output.close()
+		with open(self.file, 'w', encoding='utf8') as fp:
+			fp.write(json.dumps(self.__settings, sort_keys=True, indent=4))
 			logger.debug('Settings saved')
 			return True
-		except:
-			logger.exception('Error writting settings!')
-			return False
+		logger.exception('Error writting settings!')
+		return False
 
 	def load(self):
-		try:
-			input = open(self.file, 'rb')
-			self.__settings = json.loads(input.read())
-			input.close()
+		if os.path.exists(self.file) is False:
+			logger.debug('No settings file exists')
+			return False
+		with open(self.file, 'r', encoding='utf8') as fp:
+			self._settings = json.loads(fp.read())
 			logger.debug('Settings loaded')
 			return True
-		except:
-			logger.exception('Error loading settings')
-			return False
-
-if __name__ == '__main__':
-	print('testing')
+		logger.exception('Error writing settings')
+		return False

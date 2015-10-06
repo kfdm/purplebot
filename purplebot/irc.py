@@ -76,9 +76,9 @@ class irc(object):
 		class Line(object):
 			def __init__(self, line):
 				self._raw = line
-				self._parts = string.rstrip(line).split(' ', 4)
+				self._parts = line.rstrip().split(' ', 4)
 				if self._parts[1] in ['PRIVMSG', 'NOTICE']:
-					_, self._command, self._text = string.rstrip(line).split(':', 2)
+					_, self._command, self._text = line.rstrip().split(':', 2)
 
 			def __getitem__(self, key):
 				return self._parts[key]
@@ -136,7 +136,7 @@ class irc(object):
 
 	def irc_raw(self, message):
 		"""Send a raw IRC message as is"""
-		self._socket.write(message.encode('utf-8'))
+		self._socket.write(message)
 
 	def irc_nick(self, nick):
 		"""Change nick"""
