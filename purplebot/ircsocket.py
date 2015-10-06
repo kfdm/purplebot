@@ -1,5 +1,5 @@
 import logging
-import Queue
+import queue
 import select
 import socket
 import threading
@@ -12,8 +12,8 @@ log_out = logging.getLogger('irc.out')
 
 class ircsocket(threading.Thread):
 	def connect(self, host, port=6667):
-		self._rbuffer = Queue.Queue()
-		self._wbuffer = Queue.Queue()
+		self._rbuffer = queue.Queue()
+		self._wbuffer = queue.Queue()
 		self._socket = socket.socket()
 		self._socket.connect((host, port))
 		self._running = True

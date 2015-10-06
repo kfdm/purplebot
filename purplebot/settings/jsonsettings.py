@@ -81,4 +81,4 @@ class Settings(object):
 			return False
 
 if __name__ == '__main__':
-	print 'testing'
+	print('testing')

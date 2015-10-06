@@ -12,3 +12,6 @@ build/*
 dist/*
 cover/*
 *.egg-info*
+
+__pycache__
+*.pyc

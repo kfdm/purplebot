@@ -34,7 +34,7 @@ def get_quote(bot, hostmask, line):
         quote = response.json()
 
     try:
-        bot.irc_privmsg(dest, u'{created} {body}'.format(**quote))
+        bot.irc_privmsg(dest, '{created} {body}'.format(**quote))
     except KeyError:
         bot.irc_notice(hostmask['nick'], 'Error reading quote')
 get_quote.command = '.quote'

@@ -57,11 +57,11 @@ class bot(irc):
 				return  # Ignore messages from blocked users
 			commandstr = string.lstrip(line[3], ':')
 
-			if commandstr in self.__commands.keys():
+			if commandstr in list(self.__commands.keys()):
 				cmd = self.__commands[commandstr]
 				if hasattr(cmd, 'alias'):
 					logger.info('Alias command %s => %s', commandstr, cmd.alias)
-					if cmd.alias not in self.__commands.keys():
+					if cmd.alias not in list(self.__commands.keys()):
 						raise CommandError('Invalid Alias')
 					cmd = self.__commands[cmd.alias]
 
@@ -70,10 +70,10 @@ class bot(irc):
 					return
 				else:
 					cmd(self, {'nick': nick, 'host': host}, line)
-		except CommandError, e:
+		except CommandError as e:
 			logger.exception('CommandError', exc_info=True)
 			self.irc_notice(nick, e.__str__())
-		except Exception, e:
+		except Exception as e:
 			logger.exception('Error processing commands\n%s', line, exc_info=True)
 			self.irc_notice(nick, 'There was an error processing that command')
 			if self._debugvar >= 2:
@@ -82,13 +82,13 @@ class bot(irc):
 	def alias_add(self, alias, command):
 		def alias_func():
 			pass
-		if alias in self.__commands.keys():
+		if alias in list(self.__commands.keys()):
 			raise BotError('Alias cannot overwrite existing object')
 		alias_func.alias = command
 		self.__commands[alias] = alias_func
 
 	def alias_remove(self, alias):
-		if alias not in self.__commands.keys():
+		if alias not in list(self.__commands.keys()):
 			raise BotError('Invalid alias name')
 		cmd = self.__commands[alias]
 		if not hasattr(cmd, 'alias'):
@@ -101,7 +101,7 @@ class bot(irc):
 		:param module: Module name in dot format. Ex my.plugin
 		:type module: str
 		"""
-		if module in self.__plugins.keys():
+		if module in list(self.__plugins.keys()):
 			logger.warning('Already loaded module %s', module)
 			return True
 
@@ -125,7 +125,7 @@ class bot(irc):
 			return False
 		else:
 			self.__plugins[module] = mod
-			for name, obj in vars(mod).iteritems():
+			for name, obj in vars(mod).items():
 				if name == 'load':
 					logger.info('Running %s plugin load event', module)
 					obj(self)
@@ -143,7 +143,7 @@ class bot(irc):
 		:type module: str
 		"""
 		module = module.replace('.', '_')
-		if module not in self.__plugins.keys():
+		if module not in list(self.__plugins.keys()):
 			return False
 		try:
 			mod = self.__plugins[module]
@@ -153,7 +153,7 @@ class bot(irc):
 				raise
 			return False
 		else:
-			for name, obj in vars(mod).iteritems():
+			for name, obj in vars(mod).items():
 				if name == 'unload':
 					logger.debug('Running %s plugin unload event', module)
 					obj(self)
@@ -169,13 +169,13 @@ class bot(irc):
 		bot.irc_ctcp_reply(line, '1.1')
 
 	def kill(self):
-		for p in self.__plugins.keys():
+		for p in list(self.__plugins.keys()):
 			self.plugin_unregister(p)
 		self.event.unregister('PRIVMSG', self.__parse_commands)
 		self.running = False
 
 	def command_help(self, cmd):
-		if cmd in self.__commands.keys():
+		if cmd in list(self.__commands.keys()):
 			if hasattr(self.__commands[cmd], 'example'):
 				return self.__commands[cmd].example
 			else:
@@ -185,16 +185,16 @@ class bot(irc):
 
 	def plugin_list(self):
 		"""Return a list of currently loaded plugins"""
-		return self.__plugins.keys()
+		return list(self.__plugins.keys())
 
 	def command_enable(self, cmd):
-		if cmd in self.__commands.keys():
+		if cmd in list(self.__commands.keys()):
 			logger.info('Enable command %s', cmd)
 			cmd = self.__commands[cmd]
 			cmd.disabled = False
 
 	def command_disable(self, cmd):
-		if cmd in self.__commands.keys():
+		if cmd in list(self.__commands.keys()):
 			logger.info('Disable command %s', cmd)
 			cmd = self.__commands[cmd]
 			cmd.disabled = True
