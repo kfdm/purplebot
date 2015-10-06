@@ -5,8 +5,8 @@ import string
 import threading
 
 from purplebot.decorators import ignore_self
-from purplebot.errors import CommandError, BotError
-from purplebot.irc import irc
+from purplebot.errors import BotError, CommandError
+from purplebot.irc import Irc
 from purplebot.settings.jsonsettings import Settings
 from purplebot.util import BlockList, parse_hostmask
 
@@ -16,7 +16,7 @@ __all__ = ['bot']
 logger = logging.getLogger(__name__)
 
 
-class bot(irc):
+class bot(Irc):
 	"""Mostly simple IRC Bot framework"""
 	def __init__(self, debug=0, settings_path=None):
 		irc.__init__(self, debug)

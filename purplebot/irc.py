@@ -6,12 +6,12 @@ from purplebot.event import EventDelegate
 from purplebot.ircsocket import ircsocket
 from purplebot.util import parse_hostmask
 
-__all__ = ['irc']
+__all__ = ['Irc']
 
 logger = logging.getLogger(__name__)
 
 
-class irc(object):
+class Irc(object):
 	"""Core IRC methods"""
 	def __init__(self, debug=1):
 		"""Initialize the bot
