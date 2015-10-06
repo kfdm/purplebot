@@ -22,7 +22,7 @@ class ircsocket(threading.Thread):
 	def read(self):
 		try:
 			return self._rbuffer.get_nowait()
-		except:
+		except Exception:
 			return None
 
 	def write(self, message):

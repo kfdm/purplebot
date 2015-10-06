@@ -1,6 +1,5 @@
 import logging
 import signal
-import string
 import time
 
 from purplebot.event import EventDelegate
@@ -33,7 +32,7 @@ class irc(object):
 		signal.signal(signal.SIGTERM, self.__sig_term)
 
 	def __sig_term(self, signum, sigframe):
-		logger.info('Bot recieved signal %s' % signum)
+		logger.info('Bot recieved signal %s', signum)
 		logger.info('Exiting')
 		self.running = False
 		if self._socket:
@@ -92,15 +91,15 @@ class irc(object):
 				if self._parts[2][0:1] == '#':
 					return self._parts[2]
 				else:
-					nick, host = parse_hostmask(self._parts[0])
+					nick, _ = parse_hostmask(self._parts[0])
 					return nick
 
 			def hostmask(self):
 				# This should only be run for PRIVMSG/NOTICE but for now
 				# I'll leave it without extra checks
-				return parse_hostmask(self._line[0])
+				return parse_hostmask(self._parts[0])
 
-		"""Parse an incoming message from the irc server"""
+		# Parse an incoming message from the irc server
 		parts = Line(line)
 		try:
 			if parts[1] in self._parse_events:
@@ -114,9 +113,9 @@ class irc(object):
 		except Exception:
 			logger.exception('Error parsing line: %s', line)
 
-	def __irc_timeout(self, bot, time):
-		if time - self._last_msg > self.__TIMEOUT:
-			self.disconnect('Irc timed out')
+	def __irc_timeout(self, bot, currenttime):
+		if currenttime - self._last_msg > self.__TIMEOUT:
+			self.__irc_error(bot, 'IRC timed out')
 
 	def __irc_ping(self, bot, message):
 		self.irc_pong(message[1])
@@ -161,9 +160,9 @@ class irc(object):
 		"""Send a PRIVMSG to a user or channel"""
 		self.irc_raw("PRIVMSG %s :%s\r\n" % (dest, msg))
 
-	def irc_quit(self, quit=""):
+	def irc_quit(self, quitmessage=""):
 		"""Quit IRC"""
-		self.irc_raw("QUIT %s\r\n" % quit)
+		self.irc_raw("QUIT %s\r\n" % quitmessage)
 
 	def irc_ping(self, test):
 		"""Send a ping message to the server"""
