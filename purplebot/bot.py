@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 class bot(Irc):
 	"""Mostly simple IRC Bot framework"""
 	def __init__(self, debug=0, settings_path=None):
-		irc.__init__(self, debug)
+		Irc.__init__(self, debug)
 
 		self.__plugins = {}
 		self.__commands = {}
