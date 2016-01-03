@@ -55,7 +55,7 @@ class bot(Irc):
 			nick, host = parse_hostmask(line[0])
 			if self.block.check(line[0]):
 				return  # Ignore messages from blocked users
-			commandstr = string.lstrip(line[3], ':')
+			commandstr = line[3].lstrip(':')
 
 			if commandstr in list(self.__commands.keys()):
 				cmd = self.__commands[commandstr]
