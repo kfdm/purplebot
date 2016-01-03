@@ -1,5 +1,6 @@
 import logging
 import sys
+
 from purplebot.bot import bot
 
 colors = {
@@ -30,14 +31,14 @@ class testbot(bot):
 			self._logger.close()
 
 	def irc_raw(self, message):
-		print message.strip()
+		print(message.strip())
 
 	def run(self, host, port, nick, ident, realname):
 		pass
 
 	def dump_events(self):
 		"""Dump the events list to the screen"""
-		print self._irc__events
+		print(self._irc__events)
 
 	def parse_file(self, irc_logfile):
 		"""Simulate the bot by using a raw irc log"""

@@ -45,8 +45,8 @@ def threaded(func):
 	class Thread(threading.Thread):
 		def run(self):
 			try:
-				if self.__target:
-					self.__target(*self.__args, **self.__kwargs)
+				if self._target:
+					self._target(*self._args, **self._kwargs)
 			except:
 				logger.exception(
 					'Uncaught Exception %s.%s',
@@ -54,7 +54,7 @@ def threaded(func):
 					func.__name__
 				)
 			finally:
-				del self.__target, self.__args, self.__kwargs
+				del self._target, self._args, self._kwargs
 
 	def wrapped(*args, **kwargs):
 		logger.debug('Running in a thread: %s.%s', func.__module__, func.__name__)

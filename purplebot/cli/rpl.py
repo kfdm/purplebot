@@ -26,7 +26,7 @@ class RPL(cmd.Cmd):
         self.bot.plugin_unregister(plugin)
 
     def do_list(self, *args):
-        print self.bot.plugin_list()
+        print(self.bot.plugin_list())
 
     def do_shell(self, line):
         """Jump into a Python Shell"""
