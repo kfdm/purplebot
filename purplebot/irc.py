@@ -60,7 +60,9 @@ class Irc(object):
 	###########################################################################
 	_parse_events = (
 		'AUTH',
+		'INVITE',
 		'JOIN',
+		'KICK',
 		'MODE',
 		'NICK',
 		'NOTICE',
