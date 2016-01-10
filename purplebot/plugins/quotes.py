@@ -1,14 +1,34 @@
 __purple__ = __name__
 
-import requests
+import datetime
+import logging
 import random
 
+import requests
+
 from purplebot import USER_AGENT
-from purplebot.decorators import threaded, ratelimit
+from purplebot.decorators import ratelimit, threaded
 
 URL_SUBMIT = 'http://localhost:8000/quotes/'
 URL_RANDOM = 'http://localhost:8000/quotes/random/'
 
+LAST_MESSAGE = datetime.datetime.utcnow()
+LOGGER = logging.getLogger(__name__)
+# Wait 3 hours between pings
+WAIT_TIME = 3 * 60 * 60
+
+
+def reset_timer(self, line):
+    '''Reset the timer for the bot'''
+    LAST_MESSAGE = datetime.datetime.utcnow()
+    LOGGER.debug('Resetting timer %s', LAST_MESSAGE)
+reset_timer.event = 'privmsg'
+
+def check_ping(self, message):
+    now = datetime.datetime.utcnow()
+    if (now - LAST_MESSAGE).total_seconds() < WAIT_TIME:
+        return
+check_ping.event = 'ping'
 
 @threaded
 @ratelimit('QuotePlugin::ratelimit', 60)
