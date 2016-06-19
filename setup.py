@@ -8,7 +8,7 @@ setup(
     url='http://github.com/kfdm/purplebot/',
     version='0.1',
     packages=find_packages(exclude=['test']),
-    # http://pypi.python.org/pypi?%3Aaction=list_classifiers
+    install_requires=['requests'],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
