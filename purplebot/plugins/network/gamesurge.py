@@ -15,12 +15,12 @@ def auth(bot):
 auth.event = 'connect'
 
 
-def invite(self, bot, line):
+def invite(bot, line):
 	channels = bot.settings.get('GamesurgePlugin::whitelist',[])
-	if line[4] in channels:
-		bot.irc_join(line[4])
+	if line[3] in channels:
+		bot.irc_join(line[3])
 	else:
-		logger.warning('Channel [%s] is not white listeded', line[4])
+		logger.warning('Channel [%s] is not white listeded', line[3])
 invite.event = 'invite'
 
 
