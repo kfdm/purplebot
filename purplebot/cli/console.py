@@ -11,7 +11,7 @@ class PurpleParser(optparse.OptionParser):
 			setattr(parser.values, option.dest, os.path.realpath(value))
 		optparse.OptionParser.__init__(self, usage="%prog [options] (start|stop|restart)")
 		self.add_option('--settings', help='Settings File',
-			dest='settings', default=os.path.expanduser('~/.purplebot/settings.json'))
+			dest='settings', default=None)
 		self.add_option('--host', help='IRC Server',
 			dest='host', default='irc.gamesurge.net')
 		self.add_option('--port', help='IRC Port',
