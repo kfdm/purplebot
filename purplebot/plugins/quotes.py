@@ -50,7 +50,7 @@ def get_quote(bot, hostmask, line):
                 quote = random.choice(quotes)
                 if quote['id'] in _RECENT_QUOTES:
                     quotes.remove(quote)
-                    logger.debug('Seen %s recently', quote['id'])
+                    LOGGER.debug('Seen %s recently', quote['id'])
                     continue
                 break
             quote['extra'] = '(Found %s) ' % response.json().get('count')
@@ -65,7 +65,7 @@ def get_quote(bot, hostmask, line):
         quote = response.json()
         quote['extra'] = ''
 
-    logger.debug('Appending quote %s to recently seen', quote['id'])
+    LOGGER.debug('Appending quote %s to recently seen', quote['id'])
     _RECENT_QUOTES.append(quote['id'])
     if len(_RECENT_QUOTES) > 10:
         _RECENT_QUOTES.pop(0)
