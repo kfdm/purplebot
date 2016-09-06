@@ -53,6 +53,7 @@ def get_quote(bot, hostmask, line):
                     logger.debug('Seen %s recently', quote['id'])
                     continue
                 break
+            quote['extra'] = '(Found %s) ' % response.json().get('count')
         except IndexError:
             bot.irc_notice(hostmask['nick'], 'No quote found for %s' % line[4])
             return
@@ -62,6 +63,7 @@ def get_quote(bot, hostmask, line):
             headers={'user-agent': USER_AGENT}
         )
         quote = response.json()
+        quote['extra'] = ''
 
     logger.debug('Appending quote %s to recently seen', quote['id'])
     _RECENT_QUOTES.append(quote['id'])
@@ -69,7 +71,7 @@ def get_quote(bot, hostmask, line):
         _RECENT_QUOTES.pop(0)
 
     try:
-        bot.irc_privmsg(dest, '{created} {body}'.format(**quote))
+        bot.irc_privmsg(dest, '{extra}{created} {body}'.format(**quote))
     except KeyError:
         bot.irc_notice(hostmask['nick'], 'Error reading quote')
 get_quote.command = '.quote'
