@@ -17,6 +17,8 @@ LOGGER = logging.getLogger(__name__)
 # Wait 3 hours between pings
 WAIT_TIME = 3 * 60 * 60
 
+_RECENT_QUOTES = []
+
 
 def reset_timer(self, line):
     '''Reset the timer for the bot'''
@@ -30,6 +32,7 @@ def check_ping(self, message):
         return
 check_ping.event = 'ping'
 
+
 @threaded
 @ratelimit('QuotePlugin::ratelimit', 60)
 def get_quote(bot, hostmask, line):
@@ -42,7 +45,14 @@ def get_quote(bot, hostmask, line):
             headers={'user-agent': USER_AGENT}
         )
         try:
-            quote = random.choice(response.json().get('results'))
+            quotes = response.json().get('results')
+            while quotes:
+                quote = random.choice(quotes)
+                if quote['id'] in _RECENT_QUOTES:
+                    quotes.remove(quote)
+                    logger.debug('Seen %s recently', quote['id'])
+                    continue
+                break
         except IndexError:
             bot.irc_notice(hostmask['nick'], 'No quote found for %s' % line[4])
             return
@@ -52,6 +62,11 @@ def get_quote(bot, hostmask, line):
             headers={'user-agent': USER_AGENT}
         )
         quote = response.json()
+
+    logger.debug('Appending quote %s to recently seen', quote['id'])
+    _RECENT_QUOTES.append(quote['id'])
+    if len(_RECENT_QUOTES) > 10:
+        _RECENT_QUOTES.pop(0)
 
     try:
         bot.irc_privmsg(dest, '{created} {body}'.format(**quote))
