@@ -3,6 +3,7 @@ __purple__ = __name__
 import datetime
 import logging
 import random
+import re
 
 import requests
 
@@ -72,6 +73,7 @@ def get_quote(bot, hostmask, line):
 
     try:
         quote['created'] = quote['created'].split('T')[0]
+        quote['body'] = re.sub('\s+', ' ', quote['body'])
         bot.irc_privmsg(dest, '{extra}{created} {body}'.format(**quote))
     except KeyError:
         bot.irc_notice(hostmask['nick'], 'Error reading quote')
