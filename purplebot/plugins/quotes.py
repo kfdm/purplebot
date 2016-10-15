@@ -71,6 +71,7 @@ def get_quote(bot, hostmask, line):
         _RECENT_QUOTES.pop(0)
 
     try:
+        quote['created'] = quote['created'].split('T')[0]
         bot.irc_privmsg(dest, '{extra}{created} {body}'.format(**quote))
     except KeyError:
         bot.irc_notice(hostmask['nick'], 'Error reading quote')
