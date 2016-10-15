@@ -1,5 +1,3 @@
-__purple__ = __name__
-
 import datetime
 import logging
 import random
@@ -9,6 +7,8 @@ import requests
 
 from purplebot import USER_AGENT
 from purplebot.decorators import ratelimit, threaded
+
+__purple__ = __name__
 
 URL_SUBMIT = 'http://localhost:8000/quotes/'
 URL_RANDOM = 'http://localhost:8000/quotes/random/'
@@ -26,6 +26,7 @@ def reset_timer(self, line):
     LAST_MESSAGE = datetime.datetime.utcnow()
     LOGGER.debug('Resetting timer %s', LAST_MESSAGE)
 reset_timer.event = 'privmsg'
+
 
 def check_ping(self, message):
     now = datetime.datetime.utcnow()
