@@ -47,6 +47,8 @@ async def on_message(message):
 
 def main():
     import purplebot.plugins.quotes
+    import purplebot.plugins.gameday
     with SETTINGS_PATH.open() as fp:
         settings = json.load(fp)
+    client.settings = settings
     client.run(settings["discord"])

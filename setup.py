@@ -9,7 +9,9 @@ setup(
     packages=find_packages(exclude=['test']),
     install_requires=[
         'discord.py',
+        'pytz',
         'requests',
+        'vobject',
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',
