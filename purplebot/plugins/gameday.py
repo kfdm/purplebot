@@ -14,7 +14,7 @@ _RECENT_QUOTES = []
 
 
 MESSAGE = """
-Next game day: {summary}
+{summary} > {diff}
 UTC: {utc}
 JST: {jst}
 EST: {est}
@@ -44,6 +44,7 @@ async def gamenight(client, match, message):
             message.channel,
             MESSAGE.format(
                 summary=nextevent.summary.value,
+                diff=nextevent.dtstart.value - today,
                 utc=nextevent.dtstart.value,
                 cst=nextevent.dtstart.value.astimezone(timezone("America/Chicago")),
                 jst=nextevent.dtstart.value.astimezone(timezone("Asia/Tokyo")),
