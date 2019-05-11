@@ -16,9 +16,9 @@ _RECENT_QUOTES = []
 MESSAGE = """
 {summary} > {diff}
 UTC: {utc}
-JST: {jst}
-EST: {est}
-CST: {cst}
+Japan: {jst}
+Eastern: {est}
+Central: {cst}
 """
 
 
