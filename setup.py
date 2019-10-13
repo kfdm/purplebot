@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 setup(
     name='PurpleBot',
@@ -11,6 +11,7 @@ setup(
         'discord.py',
         'pytz',
         'requests',
+        'sentry_sdk',
         'vobject',
     ],
     classifiers=[

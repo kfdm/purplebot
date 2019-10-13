@@ -1,13 +1,22 @@
 import json
 import logging
+import os
 from pathlib import Path
 
 import asyncio
 import discord
 from purplebot.dispatch import dispatch
 
-
 logging.basicConfig(level=logging.INFO)
+
+try:
+    import sentry_sdk
+
+    assert os.environ["SENTRY_DSN"]
+    sentry_sdk.init(os.environ["SENTRY_DSN"])
+except (ImportError, AssertionError):
+    pass
+
 
 SETTINGS_PATH = Path.home() / ".config" / "purplebot" / "settings.json"
 
@@ -48,6 +57,7 @@ async def on_message(message):
 def main():
     import purplebot.plugins.quotes
     import purplebot.plugins.gameday
+
     with SETTINGS_PATH.open() as fp:
         settings = json.load(fp)
     client.settings = settings
