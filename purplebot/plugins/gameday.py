@@ -31,7 +31,11 @@ async def gamenight(client, match, message):
     calendar = vobject.readOne(response.text)
     for event in calendar.components():
         # Ignore older events
-        if event.dtstart.value < today:
+        try:
+            if event.dtstart.value < today:
+                continue
+        except TypeError:
+            # Lazy way to filter out all day events
             continue
         print(event)
         # If the current event is older than our next event, skip
