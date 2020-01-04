@@ -2,7 +2,7 @@ import datetime
 import logging
 import random
 
-import pytz
+import arrow
 import vobject
 from purplebot import session
 from purplebot.dispatch import dispatch
@@ -20,10 +20,6 @@ Japan: {jst}
 Eastern: {est}
 Central: {cst}
 """
-
-CST_TZ = pytz.timezone("America/Chicago")
-JST_TZ = pytz.timezone("Asia/Tokyo")
-EST_TZ = pytz.timezone("America/New_York")
 
 
 @dispatch.register("^.gamenight")
@@ -49,7 +45,7 @@ async def gamenight(client, match, message):
 
     if nextevent:
         remaining = nextevent.dtstart.value - today
-        utc_dt = pytz.utc.localize(nextevent.dtstart.value)
+        utc_dt = arrow.get(nextevent.dtstart.value)
 
         await client.send_message(
             message.channel,
@@ -57,8 +53,8 @@ async def gamenight(client, match, message):
                 summary=nextevent.summary.value,
                 diff=remaining,
                 utc=utc_dt,
-                cst=CST_TZ.normalize(utc_dt),
-                jst=JST_TZ.normalize(utc_dt),
-                est=EST_TZ.normalize(utc_dt),
+                cst=utc_dt.to("America/Chicago"),
+                jst=utc_dt.to("Asia/Tokyo"),
+                est=utc_dt.to("America/New_York"),
             ),
         )
