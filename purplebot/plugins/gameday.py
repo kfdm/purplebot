@@ -1,11 +1,11 @@
+import datetime
+import logging
+import random
+
+import pytz
+import vobject
 from purplebot import session
 from purplebot.dispatch import dispatch
-import datetime
-import random
-import logging
-import vobject
-from pytz import timezone
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -20,6 +20,10 @@ Japan: {jst}
 Eastern: {est}
 Central: {cst}
 """
+
+CST_TZ = pytz.timezone("America/Chicago")
+JST_TZ = pytz.timezone("Asia/Tokyo")
+EST_TZ = pytz.timezone("America/New_York")
 
 
 @dispatch.register("^.gamenight")
@@ -37,22 +41,24 @@ async def gamenight(client, match, message):
         except TypeError:
             # Lazy way to filter out all day events
             continue
-        print(event)
+
         # If the current event is older than our next event, skip
         if nextevent and event.dtstart.value > nextevent.dtstart.value:
             continue
         nextevent = event
 
     if nextevent:
+        remaining = nextevent.dtstart.value - today
+        utc_dt = pytz.utc.localize(nextevent.dtstart.value)
+
         await client.send_message(
             message.channel,
             MESSAGE.format(
                 summary=nextevent.summary.value,
-                diff=nextevent.dtstart.value - today,
-                utc=nextevent.dtstart.value,
-                cst=nextevent.dtstart.value.astimezone(timezone("America/Chicago")),
-                jst=nextevent.dtstart.value.astimezone(timezone("Asia/Tokyo")),
-                est=nextevent.dtstart.value.astimezone(timezone("America/New_York")),
+                diff=remaining,
+                utc=utc_dt,
+                cst=CST_TZ.normalize(utc_dt),
+                jst=JST_TZ.normalize(utc_dt),
+                est=EST_TZ.normalize(utc_dt),
             ),
         )
-
