@@ -47,8 +47,7 @@ async def gamenight(client, match, message):
         remaining = nextevent.dtstart.value - today
         utc_dt = arrow.get(nextevent.dtstart.value)
 
-        await client.send_message(
-            message.channel,
+        await message.channel.send(
             MESSAGE.format(
                 summary=nextevent.summary.value,
                 diff=remaining,

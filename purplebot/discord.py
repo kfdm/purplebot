@@ -13,9 +13,10 @@ try:
     import sentry_sdk
 
     assert os.environ["SENTRY_DSN"]
-    sentry_sdk.init(os.environ["SENTRY_DSN"])
-except (ImportError, AssertionError):
+except (ImportError, AssertionError, KeyError):
     pass
+else:
+    sentry_sdk.init(os.environ["SENTRY_DSN"])
 
 
 SETTINGS_PATH = Path.home() / ".config" / "purplebot" / "settings.json"
