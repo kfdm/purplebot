@@ -15,11 +15,14 @@ _RECENT_QUOTES = []
 
 MESSAGE = """
 {summary} > {diff}
-UTC: {utc}
-Japan: {jst}
-Eastern: {est}
-Central: {cst}
-England: {gmt}
+
+```
+{utc} UTC
+{jst} KFDM
+{est} Stonetoad
+{cst} Rath
+{gmt} Quaq
+```
 """
 
 
