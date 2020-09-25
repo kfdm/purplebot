@@ -15,7 +15,6 @@ _RECENT_QUOTES = []
 
 MESSAGE = """
 {summary} > {diff}
-
 ```
 {utc} UTC
 {jst} KFDM
