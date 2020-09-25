@@ -19,6 +19,7 @@ UTC: {utc}
 Japan: {jst}
 Eastern: {est}
 Central: {cst}
+England: {gmt}
 """
 
 
@@ -55,5 +56,6 @@ async def gamenight(client, match, message):
                 cst=utc_dt.to("America/Chicago"),
                 jst=utc_dt.to("Asia/Tokyo"),
                 est=utc_dt.to("America/New_York"),
+                gmt=utc_dt.to("Europe/London"),
             ),
         )
