@@ -14,7 +14,7 @@ _RECENT_QUOTES = []
 
 
 MESSAGE = """
-{summary} > {diff}
+{summary} > <t:{tstamp}:R>
 ```
 {utc} UTC
 {jst} KFDM
@@ -53,7 +53,8 @@ async def gamenight(client, match, message):
         await message.channel.send(
             MESSAGE.format(
                 summary=nextevent.summary.value,
-                diff=remaining,
+                #diff=remaining,
+                tstamp=nextevent.dtstart.value.timestamp(),
                 utc=utc_dt,
                 cst=utc_dt.to("America/Chicago"),
                 jst=utc_dt.to("Asia/Tokyo"),
