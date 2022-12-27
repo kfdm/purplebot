@@ -1,10 +1,11 @@
+import asyncio
 import json
 import logging
 import os
 from pathlib import Path
 
-import asyncio
-import discord
+from discord import Client, Intents, Message
+
 from purplebot.dispatch import dispatch
 
 logging.basicConfig(level=logging.INFO)
@@ -21,16 +22,17 @@ else:
 
 SETTINGS_PATH = Path.home() / ".config" / "purplebot" / "settings.json"
 
-client = discord.Client()
+
 logger = logging.getLogger(__name__)
+
+intents = Intents.default()
+intents.message_content = True
+client = Client(intents=intents)
 
 
 @client.event
 async def on_ready():
-    print("Logged in as")
-    print(client.user.name)
-    print(client.user.id)
-    print("------")
+    logger.info("Logged in as %s %s", client.user.name, client.user.id)
 
 
 @dispatch.register("^!test")
@@ -41,7 +43,7 @@ async def test(client, command, message):
         if log.author == message.author:
             counter += 1
 
-    await client.edit_message(tmp, "You have {} messages.".format(counter))
+    await client.edit_message(tmp, f"You have {counter} messages.")
 
 
 @dispatch.register("^!sleep")
@@ -51,15 +53,18 @@ async def sleep(client, command, message):
 
 
 @client.event
-async def on_message(message):
-    await dispatch.handle(client, message.content, message)
+async def on_message(message: Message):
+    await dispatch.handle(client, message)
 
 
 def main():
-    import purplebot.plugins.quotes
-    import purplebot.plugins.gameday
+    import purplebot.plugins.gameday  # NOQA
+    import purplebot.plugins.quotes  # NOQA
 
-    with SETTINGS_PATH.open() as fp:
-        settings = json.load(fp)
+    if SETTINGS_PATH.exists():
+        with SETTINGS_PATH.open() as fp:
+            settings = json.load(fp)
+    else:
+        settings = {}
     client.settings = settings
     client.run(settings["discord"])

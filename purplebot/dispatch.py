@@ -1,6 +1,8 @@
 import logging
 import re
 
+from discord import Message
+
 from purplebot.exceptions import CommandError
 
 logger = logging.getLogger(__name__)
@@ -19,13 +21,14 @@ class Dispatch:
 
         return wrapping
 
-    async def handle(self, client, command, event):
-        logger.info("parsing command: %s %s", command, event)
+    async def handle(self, client, message: Message):
+        logger.info("parsing command from: %s", message)
         for cmd in self.mapping:
-            match = cmd["re"].match(command)
+            match = cmd["re"].match(message.content)
             if match:
+                logger.info("Found match %s", match)
                 try:
-                    return await cmd["func"](client, match, event)
+                    return await cmd["func"](client, match, message)
                 except CommandError as e:
                     pass
 

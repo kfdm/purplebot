@@ -1,8 +1,8 @@
+import logging
+import random
+
 from purplebot import session
 from purplebot.dispatch import dispatch
-import random
-import logging
-
 
 LOGGER = logging.getLogger(__name__)
 

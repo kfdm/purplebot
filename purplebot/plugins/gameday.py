@@ -1,16 +1,13 @@
 import datetime
 import logging
-import random
 
 import arrow
 import vobject
+
 from purplebot import session
 from purplebot.dispatch import dispatch
 
 LOGGER = logging.getLogger(__name__)
-
-
-_RECENT_QUOTES = []
 
 
 MESSAGE = """
