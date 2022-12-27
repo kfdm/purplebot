@@ -43,7 +43,7 @@ async def test(client, command, message):
         if log.author == message.author:
             counter += 1
 
-    await client.edit_message(tmp, "You have {} messages.".format(counter))
+    await client.edit_message(tmp, f"You have {counter} messages.")
 
 
 @dispatch.register("^!sleep")

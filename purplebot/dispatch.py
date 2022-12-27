@@ -2,6 +2,7 @@ import logging
 import re
 
 from discord import Message
+
 from purplebot.exceptions import CommandError
 
 logger = logging.getLogger(__name__)

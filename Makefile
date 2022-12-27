@@ -1,6 +1,6 @@
 APP_BIN := .venv/bin/purplebot-discord
 PIP_BIN := .venv/bin/pip
-SYSTEM_PYTHON ?= python3.9
+SYSTEM_PYTHON ?= python3.10
 
 
 .PHONY:	run build check clean
