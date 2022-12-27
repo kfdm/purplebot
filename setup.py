@@ -9,7 +9,7 @@ setup(
     packages=find_packages(exclude=['test']),
     install_requires=[
         'arrow',
-        'discord.py==1.4.1',
+        'discord.py',
         'pytz',
         'requests',
         'sentry_sdk',
