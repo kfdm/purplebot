@@ -61,7 +61,10 @@ def main():
     import purplebot.plugins.gameday  # NOQA
     import purplebot.plugins.quotes  # NOQA
 
-    with SETTINGS_PATH.open() as fp:
-        settings = json.load(fp)
+    if SETTINGS_PATH.exists():
+        with SETTINGS_PATH.open() as fp:
+            settings = json.load(fp)
+    else:
+        settings = {}
     client.settings = settings
     client.run(settings["discord"])
