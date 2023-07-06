@@ -83,7 +83,7 @@ compile: docker/requirements.txt
 
 .PHONY:	build
 ## Docker: Build docker container
-build:	docker/requirements.txt
+build:
 	docker build . --tag $(CONTAINER_NAME)
 
 
